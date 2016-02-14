@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">tabs</string>
+    <string name="Top250Tab">TOP250</string>
+    <string name="ComingSoonTab">SOON</string>
+    <string name="FavoriteTab">FAVS</string>
+
+</resources>
