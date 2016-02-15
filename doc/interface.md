@@ -20,21 +20,21 @@
 
 Выглядит так:
 
-![таб: топ 250](/img/tab_top250.png)
+![таб: топ 250](https://github.com/remfils/IMDB-searcher/blob/master/doc/img/tab_top250.png)
 
 ## ТАБ: ожидаемые
 
 Отображает фильмы, которые ждет пользователь.
 По умолчанию показывает фильмы, которые выйдут в ближайшее время.
 
-![таб: ожидаемое](/img/tab_soon.png)
+![таб: ожидаемое](https://github.com/remfils/IMDB-searcher/blob/master/doc/img/tab_soon.png)
 
 ## ТАБ: избранное
 
 Отображает фильмы, которые пользователь добавил в избранное.
 По умолчанию пустой список.
 
-![таб: избранное](/img/tab_favs.png)
+![таб: избранное](https://github.com/remfils/IMDB-searcher/blob/master/doc/img/tab_favs.png)
 
 ## Поиск
 
@@ -46,11 +46,11 @@
 
 *Меню поиска:*
 
-![экран поиска](/img/search.png)
+![экран поиска](https://github.com/remfils/IMDB-searcher/blob/master/doc/img/search.png)
 
 *Результат поиска:*
 
-![результат поиска](/img/search_result.png)
+![результат поиска](https://github.com/remfils/IMDB-searcher/blob/master/doc/img/search_result.png)
 
 ## Отображение отдельного фильма
 
@@ -69,4 +69,4 @@
   
 Выглядит так:
 
-![отображение фильма](/img/view_movie.png)
+![отображение фильма](https://github.com/remfils/IMDB-searcher/blob/master/doc/img/view_movie.png)
