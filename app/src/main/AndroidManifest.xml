@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="casak.ru.tabs">
+    package="ru.casak.IMDB_searcher">
 
     <application
         android:allowBackup="true"
@@ -9,7 +9,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="casak.ru.tabs.TabsActivity"
+            android:name="ru.casak.IMDB_searcher.TabsActivity"
             android:label="@string/app_name">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />

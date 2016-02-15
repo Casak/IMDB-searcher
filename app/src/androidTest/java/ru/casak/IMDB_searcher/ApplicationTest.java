@@ -1,4 +1,4 @@
-package casak.ru.tabs;
+package ru.casak.IMDB_searcher;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
