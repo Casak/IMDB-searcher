@@ -24,23 +24,20 @@ public class TabsActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
-
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(new SampleFragmentPagerAdapter(getSupportFragmentManager(),
-                TabsActivity.this));
-
         ColorSetTop250Tab = getResources().obtainTypedArray(R.array.colorSetTop250);
         ColorSetComingSoonTab = getResources().obtainTypedArray(R.array.colorSetComingSoon);
         ColorSetFavoriteTab = getResources().obtainTypedArray(R.array.colorSetFavorite);
         colorThemes = new TypedArray[] {ColorSetTop250Tab, ColorSetComingSoonTab, ColorSetFavoriteTab};
+        window = getWindow();
 
+        setContentView(R.layout.activity_main);
 
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager.setAdapter(new TabWithFragmentPagerAdapter(getSupportFragmentManager(),
+                TabsActivity.this));
 
         tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
-
-        window = getWindow();
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
@@ -52,7 +49,7 @@ public class TabsActivity extends AppCompatActivity {
                         : colorThemes[position];
 
                 Integer[] a = new Integer[4];
-                for ( int i = 0; i < 4 ; i++ ) {
+                for (int i = 0; i < 4; i++) {
                     a[i] = (Integer) colorEvaluator.evaluate(
                             positionOffset,
                             currentColorSet.getColor(i, 0),
@@ -73,7 +70,12 @@ public class TabsActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
+
+
+
 
     private void changeColorTheme(TypedArray colorSet){
         changeInterfaceHeadColorTheme(

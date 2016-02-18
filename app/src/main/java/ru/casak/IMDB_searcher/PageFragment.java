@@ -30,9 +30,12 @@ public class PageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_page, container, false);
+        /*View view = inflater.inflate(R.layout.fragment_page, container, false);
         TextView textView = (TextView) view;
-        textView.setText("Fragment #" + mPage);
+        textView.setText("Fragment #" + mPage);*/
+        View view = inflater.inflate(R.layout.film_card, container, false);
+        TextView textView = (TextView)view.findViewById(R.id.title);
+        textView.setText("FILM TITLE");
         return view;
     }
 }
