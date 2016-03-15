@@ -48,16 +48,16 @@ public class TabsActivity extends AppCompatActivity {
                         ? colorThemes[position + 1]
                         : colorThemes[position];
 
-                Integer[] a = new Integer[4];
+                Integer[] evalColor = new Integer[4];
                 for (int i = 0; i < 4; i++) {
-                    a[i] = (Integer) colorEvaluator.evaluate(
+                    evalColor[i] = (Integer) colorEvaluator.evaluate(
                             positionOffset,
                             currentColorSet.getColor(i, 0),
                             nextColor.getColor(i, 0)
                     );
                 }
 
-                changeInterfaceHeadColorTheme(a[0], a[1], a[2], a[3]);
+                changeInterfaceHeadColorTheme(evalColor[0], evalColor[1], evalColor[2], evalColor[3]);
             }
 
             @Override
