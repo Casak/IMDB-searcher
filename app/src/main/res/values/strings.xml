@@ -3,5 +3,6 @@
     <string name="Top250Tab">TOP250</string>
     <string name="ComingSoonTab">SOON</string>
     <string name="FavoriteTab">FAVS</string>
+    <string name="ApiKey">64405288c707e2b26ce8e0b4aeacad56</string>
 
 </resources>
