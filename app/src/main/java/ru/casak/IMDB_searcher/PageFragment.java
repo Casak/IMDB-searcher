@@ -2,6 +2,9 @@ package ru.casak.IMDB_searcher;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,12 +33,11 @@ public class PageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        /*View view = inflater.inflate(R.layout.fragment_page, container, false);
-        TextView textView = (TextView) view;
-        textView.setText("Fragment #" + mPage);*/
-        View view = inflater.inflate(R.layout.film_card, container, false);
-        TextView textView = (TextView)view.findViewById(R.id.title);
-        textView.setText("FILM TITLE");
-        return view;
+        View rootView = inflater.inflate(R.layout.fragment_page, container, false);
+        final RecyclerView mRecyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerView);
+        final LinearLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(new CardsAdapter(getContext().getResources().getString(R.string.ApiKey)));
+        return rootView;
     }
 }
