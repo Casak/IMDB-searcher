@@ -26,38 +26,7 @@ public class Top250Fragment extends Fragment {
         final RecyclerView mRecyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerView);
         final LinearLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(new CardsAdapter());
-
-
-        /*mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-
-                visibleItemCount = mRecyclerView.getChildCount();
-                totalItemCount = mLayoutManager.getItemCount();
-                firstVisibleItem = mLayoutManager.findFirstVisibleItemPosition();
-
-                if (loading) {
-                    if (totalItemCount > previousTotal) {
-                        loading = false;
-                        previousTotal = totalItemCount;
-                    }
-                }
-                if (!loading && (totalItemCount - visibleItemCount)
-                        <= (firstVisibleItem + visibleThreshold)) {
-                    // End has been reached
-
-                    Log.i("Yaeye!", "end called");
-
-                    for(int i = visibleItemCount; i<visibleItemCount+10; i++)
-                        CardsAdapter.dataList.add("Title #"+i);
-
-                    loading = true;
-                }
-
-            }
-        });*/
+        mRecyclerView.setAdapter(new CardsAdapter(getContext().getResources().getString(R.string.ApiKey)));
         Log.d(TAG, "onCreateView finished");
         return rootView;
     }
