@@ -42,7 +42,7 @@ public class TMDBRetrofit {
                 HttpUrl originalUrl = original.url();
 
                 HttpUrl url = originalUrl.newBuilder()
-                        .addQueryParameter("api_key", TabsActivity.getContext().getResources().getString(R.string.ApiKey))
+                        .addQueryParameter("api_key", TabsActivity.getContext().getResources().getString(R.string.api_key))
                         .build();
 
                 Request.Builder requestBuilder = original.newBuilder()

@@ -2,20 +2,20 @@
     <string name="app_name">TMDB Searcher</string>
 
     <!--Tabs titles-->
-    <string name="Top250Tab">TOP250</string>
-    <string name="ComingSoonTab">SOON</string>
-    <string name="FavoriteTab">FAVS</string>
+    <string name="top250_tab_title">TOP250</string>
+    <string name="coming_soon_tab_title">SOON</string>
+    <string name="favorite_tab_title">FAVS</string>
 
     <!--Film details (FilmActivity)-->
 
     <string name="film_title">Title: </string>
-    <string name="overview">Overview: </string>
-    <string name="director">Director: </string>
-    <string name="runtime">Runtime: </string>
-    <string name="release_date">Release Date: </string>
-    <string name="vote_average">Vote Average: </string>
+    <string name="film_overview">Overview: </string>
+    <string name="film_director">Director: </string>
+    <string name="film_runtime">Runtime: </string>
+    <string name="film_release_date">Release Date: </string>
+    <string name="film_vote_average">Vote Average: </string>
 
     <!--API KEYS-->
-    <string name="ApiKey">64405288c707e2b26ce8e0b4aeacad56</string>
+    <string name="api_key">64405288c707e2b26ce8e0b4aeacad56</string>
 
 </resources>

@@ -16,9 +16,9 @@ public class TabWithFragmentPagerAdapter extends FragmentPagerAdapter {
         super(fm);
         this.context = context;
         tabTitles = new String[] {
-                context.getResources().getString(R.string.Top250Tab),
-                context.getResources().getString(R.string.ComingSoonTab),
-                context.getResources().getString(R.string.FavoriteTab) };
+                context.getResources().getString(R.string.top250_tab_title),
+                context.getResources().getString(R.string.coming_soon_tab_title),
+                context.getResources().getString(R.string.favorite_tab_title) };
     }
 
     @Override
