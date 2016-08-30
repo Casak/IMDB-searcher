@@ -1,8 +1,16 @@
 <resources>
-    <string name="app_name">tabs</string>
+    <string name="app_name">TMDB Searcher</string>
     <string name="Top250Tab">TOP250</string>
     <string name="ComingSoonTab">SOON</string>
     <string name="FavoriteTab">FAVS</string>
+
     <string name="ApiKey">64405288c707e2b26ce8e0b4aeacad56</string>
+
+    <string name="film_title">Title: </string>
+    <string name="overview">Overview: </string>
+    <string name="director">Director: </string>
+    <string name="runtime">Runtime: </string>
+    <string name="release_date">Release Date: </string>
+    <string name="vote_average">Vote Average: </string>
 
 </resources>

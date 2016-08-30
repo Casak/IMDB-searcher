@@ -30,6 +30,7 @@ public class TabWithFragmentPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch(position){
             case 0: return new Top250Fragment();
+            case 1: return new ComingSoonFragment();
             default: return PageFragment.newInstance(position + 1);
         }
     }

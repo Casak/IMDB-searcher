@@ -10,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class PageFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
@@ -37,7 +40,8 @@ public class PageFragment extends Fragment {
         final RecyclerView mRecyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerView);
         final LinearLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(new CardsAdapter(getContext().getResources().getString(R.string.ApiKey)));
+        //mRecyclerView.setAdapter(new CardsAdapter(getContext().getResources().getString(R.string.ApiKey)));
+        mRecyclerView.setAdapter(new CardsAdapter(new ArrayList<Movie>()));
         return rootView;
     }
 }

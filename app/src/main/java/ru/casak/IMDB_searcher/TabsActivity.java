@@ -1,15 +1,19 @@
 package ru.casak.IMDB_searcher;
 
 import android.animation.ArgbEvaluator;
+import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Window;
 
 public class TabsActivity extends AppCompatActivity {
+    private static final String TAG = "TabsActivity";
+    private static Context context;
     private ViewPager viewPager;
     private TabLayout tabLayout;
 
@@ -21,8 +25,11 @@ public class TabsActivity extends AppCompatActivity {
     private ArgbEvaluator colorEvaluator = new ArgbEvaluator();
     private Window window;
 
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        context = getApplicationContext();
 
         ColorSetTop250Tab = getResources().obtainTypedArray(R.array.colorSetTop250);
         ColorSetComingSoonTab = getResources().obtainTypedArray(R.array.colorSetComingSoon);
@@ -35,6 +42,7 @@ public class TabsActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(new TabWithFragmentPagerAdapter(getSupportFragmentManager(),
                 TabsActivity.this));
+        viewPager.setOffscreenPageLimit(2);
 
         tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -58,24 +66,25 @@ public class TabsActivity extends AppCompatActivity {
                 }
 
                 changeInterfaceHeadColorTheme(evalColor[0], evalColor[1], evalColor[2], evalColor[3]);
+                Log.d(TAG, "onPageScrolled() ----done");
             }
 
             @Override
             public void onPageSelected(int position) {
                 changeColorTheme(colorThemes[position]);
+                Log.d(TAG, "onPageSelected() ----done");
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
+                Log.d(TAG, "onPageScrollStateChanged() ----done");
             }
         });
-
-
     }
 
-
-
+    public static Context getContext() {
+        return TabsActivity.context;
+    }
 
     private void changeColorTheme(TypedArray colorSet){
         changeInterfaceHeadColorTheme(
