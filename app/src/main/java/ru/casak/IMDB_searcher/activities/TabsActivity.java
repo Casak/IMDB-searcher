@@ -1,4 +1,4 @@
-package ru.casak.IMDB_searcher;
+package ru.casak.IMDB_searcher.activities;
 
 import android.animation.ArgbEvaluator;
 import android.content.Context;
@@ -10,6 +10,9 @@ import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Window;
+
+import ru.casak.IMDB_searcher.R;
+import ru.casak.IMDB_searcher.adapters.TabWithFragmentPagerAdapter;
 
 public class TabsActivity extends AppCompatActivity {
     private static final String TAG = "TabsActivity";

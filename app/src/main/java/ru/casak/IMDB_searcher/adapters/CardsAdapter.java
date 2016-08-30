@@ -1,4 +1,4 @@
-package ru.casak.IMDB_searcher;
+package ru.casak.IMDB_searcher.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.squareup.picasso.Picasso;
+
+import ru.casak.IMDB_searcher.models.Movie;
+import ru.casak.IMDB_searcher.R;
+import ru.casak.IMDB_searcher.activities.FilmActivity;
 
 public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> {
     private static final String TAG = "CardsAdapter";

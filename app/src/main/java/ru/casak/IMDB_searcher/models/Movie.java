@@ -1,7 +1,6 @@
-package ru.casak.IMDB_searcher;
+package ru.casak.IMDB_searcher.models;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import java.util.Date;
 import java.util.List;

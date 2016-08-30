@@ -22,7 +22,7 @@
             app:expandedTitleMarginStart="48dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <ru.casak.IMDB_searcher.SquareImageView
+            <ru.casak.IMDB_searcher.views.SquareImageView
                 android:id="@+id/image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

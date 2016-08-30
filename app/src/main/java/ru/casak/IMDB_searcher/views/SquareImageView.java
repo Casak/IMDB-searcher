@@ -1,4 +1,4 @@
-package ru.casak.IMDB_searcher;
+package ru.casak.IMDB_searcher.views;
 
 import android.content.Context;
 import android.util.AttributeSet;

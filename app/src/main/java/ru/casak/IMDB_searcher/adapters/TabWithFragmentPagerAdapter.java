@@ -1,10 +1,15 @@
-package ru.casak.IMDB_searcher;
+package ru.casak.IMDB_searcher.adapters;
 
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import ru.casak.IMDB_searcher.R;
+import ru.casak.IMDB_searcher.fragments.ComingSoonFragment;
+import ru.casak.IMDB_searcher.fragments.PageFragment;
+import ru.casak.IMDB_searcher.fragments.Top250Fragment;
 
 public class TabWithFragmentPagerAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 3;

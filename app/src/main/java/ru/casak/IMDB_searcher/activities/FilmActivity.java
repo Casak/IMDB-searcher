@@ -1,4 +1,4 @@
-package ru.casak.IMDB_searcher;
+package ru.casak.IMDB_searcher.activities;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -23,6 +23,10 @@ import android.support.v7.graphics.Palette;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import ru.casak.IMDB_searcher.services.FilmService;
+import ru.casak.IMDB_searcher.models.Movie;
+import ru.casak.IMDB_searcher.R;
+import ru.casak.IMDB_searcher.network.TMDBRetrofit;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
