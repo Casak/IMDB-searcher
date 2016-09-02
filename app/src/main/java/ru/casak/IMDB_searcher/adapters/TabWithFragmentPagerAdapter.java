@@ -13,6 +13,10 @@ import ru.casak.IMDB_searcher.fragments.Top250Fragment;
 
 public class TabWithFragmentPagerAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 3;
+    final int TOP250_POSITION = 1;
+    final int COMING_SOON_POSITION = 2;
+    final int FAVORITES_POSITION = 3;
+
     private Context context;
     private String tabTitles[];
 
@@ -34,15 +38,19 @@ public class TabWithFragmentPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch(position){
-            case 0: return new Top250Fragment();
-            case 1: return new ComingSoonFragment();
-            default: return PageFragment.newInstance(position + 1);
+            case TOP250_POSITION:
+                return new Top250Fragment();
+            case COMING_SOON_POSITION:
+                return new ComingSoonFragment();
+            case FAVORITES_POSITION:
+                return PageFragment.newInstance(position + 1);
+            default:
+                return PageFragment.newInstance(position + 1);
         }
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        // Generate title based on item position
         return tabTitles[position];
     }
 }
