@@ -1,10 +1,10 @@
-package ru.casak.IMDB_searcher;
-
-import java.util.List;
+package ru.casak.IMDB_searcher.services;
 
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import ru.casak.IMDB_searcher.models.Movie;
+import ru.casak.IMDB_searcher.models.MovieResults;
 import rx.Observable;
 
 /**
@@ -21,7 +21,7 @@ public interface FilmService {
 
     @GET("movie/{id}")
     Observable<Movie> getMovie(@Path("id") Integer id,
-                                         @Query("language") String language);
+                               @Query("language") String language);
 
 
 

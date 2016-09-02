@@ -1,4 +1,4 @@
-package ru.casak.IMDB_searcher;
+package ru.casak.IMDB_searcher.fragments;
 
 
 import android.os.Bundle;
@@ -14,35 +14,42 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
-import retrofit2.Retrofit;
+import ru.casak.IMDB_searcher.adapters.CardsAdapter;
+import ru.casak.IMDB_searcher.services.FilmService;
+import ru.casak.IMDB_searcher.models.Movie;
+import ru.casak.IMDB_searcher.models.MovieResults;
+import ru.casak.IMDB_searcher.R;
+import ru.casak.IMDB_searcher.network.TMDBRetrofit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class ComingSoonFragment extends Fragment {
-    private static final String TAG = "ComingSoonFragment";
+public class Top250Fragment extends Fragment {
+    private static final String TAG = Top250Fragment.class.getSimpleName();
     private static final int SPAN_COUNT = 2;
-    private CardsAdapter cardsAdapter = new CardsAdapter(new ArrayList<Movie>());
+    private static final int PAGE_NUMBER = 1;
+    private final CardsAdapter cardsAdapter = new CardsAdapter(new ArrayList<Movie>());
     private RecyclerView mRecyclerView;
     private boolean loading = true;
-    private int pastVisiblesItems, visibleItemCount, totalItemCount;
+    private int pastVisibleItems, visibleItemCount, totalItemCount;
 
     @Override
     public void onCreate (Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        loadData(1);
+        loadData(PAGE_NUMBER);
         Log.d(TAG, "onCreate finished");
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_page, container, false);
-        mRecyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerView);
         final LinearLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
+
+        View rootView = inflater.inflate(R.layout.fragment_page, container, false);
+
+        mRecyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(cardsAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -51,10 +58,10 @@ public class ComingSoonFragment extends Fragment {
 
                 visibleItemCount = mLayoutManager.getChildCount();
                 totalItemCount = mLayoutManager.getItemCount();
-                pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
+                pastVisibleItems = mLayoutManager.findFirstVisibleItemPosition();
 
                 if (loading) {
-                    if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                    if ( (visibleItemCount + pastVisibleItems) >= totalItemCount) {
                         loading = false;
                         int page = (cardsAdapter.getItemCount() / 20) + 1;
                         if (page <= 20) loadData(page);
@@ -69,7 +76,7 @@ public class ComingSoonFragment extends Fragment {
     private void loadData(int page){
         FilmService filmService = TMDBRetrofit.getFilmServiceInstance();
 
-        Observable<MovieResults> observable = filmService.getUpcoming(page, "en");
+        Observable<MovieResults> observable = filmService.getTopRated(page, "en");
         try {
             observable
                     .observeOn(AndroidSchedulers.mainThread())
@@ -97,15 +104,13 @@ public class ComingSoonFragment extends Fragment {
                         @Override
                         public void onNext(Movie movie) {
                             cardsAdapter.getMovieList().add(movie);
-
                             cardsAdapter.notifyItemRangeInserted(cardsAdapter.getMovieList().size() - 1, 1);
                             Log.d(TAG, "onNext: " + movie.getTitle());
                         }
                     });
         }
         catch (NetworkOnMainThreadException e ){
-            Log.d(TAG, "Caught:");
-            e.printStackTrace();
+            Log.d(TAG, "Caught: " + e);
         }
     }
 

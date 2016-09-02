@@ -1,4 +1,4 @@
-package ru.casak.IMDB_searcher;
+package ru.casak.IMDB_searcher.network;
 
 import android.util.Log;
 
@@ -12,6 +12,9 @@ import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import ru.casak.IMDB_searcher.R;
+import ru.casak.IMDB_searcher.activities.TabsActivity;
+import ru.casak.IMDB_searcher.services.FilmService;
 
 /**
  * Created by Casak on 01.04.2016.
@@ -42,7 +45,7 @@ public class TMDBRetrofit {
                 HttpUrl originalUrl = original.url();
 
                 HttpUrl url = originalUrl.newBuilder()
-                        .addQueryParameter("api_key", TabsActivity.getContext().getResources().getString(R.string.ApiKey))
+                        .addQueryParameter("api_key", TabsActivity.getContext().getResources().getString(R.string.api_key))
                         .build();
 
                 Request.Builder requestBuilder = original.newBuilder()

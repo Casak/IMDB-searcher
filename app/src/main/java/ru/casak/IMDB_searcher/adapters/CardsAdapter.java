@@ -1,4 +1,4 @@
-package ru.casak.IMDB_searcher;
+package ru.casak.IMDB_searcher.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.squareup.picasso.Picasso;
+
+import ru.casak.IMDB_searcher.models.Movie;
+import ru.casak.IMDB_searcher.R;
+import ru.casak.IMDB_searcher.activities.FilmActivity;
 
 public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> {
     private static final String TAG = "CardsAdapter";
@@ -37,6 +41,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position){
         final Context context = holder.getImageView().getContext();
+
         holder.getImageView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -47,7 +52,8 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
                 Log.d(TAG, "Element " + position + " clicked.");
             }
         });
-        if (movieList.size() != 0){
+
+        if ( movieList.size() != 0 ) {
             holder.getTextView().setText(movieList.get(position).getTitle());
             Picasso picasso = Picasso.with(context);
             picasso.setIndicatorsEnabled(true);
@@ -57,7 +63,8 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
                     .into(holder.getImageView());
             Log.d(TAG, "Element " + position + " set with: " + movieList.get(position).getTitle());
         }
-        else Log.d(TAG, "No elements was set");
+        else
+            Log.d(TAG, "No elements was set");
     }
 
     @Override

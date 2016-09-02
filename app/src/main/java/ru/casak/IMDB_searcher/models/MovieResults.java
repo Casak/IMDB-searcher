@@ -1,4 +1,4 @@
-package ru.casak.IMDB_searcher;
+package ru.casak.IMDB_searcher.models;
 
 import java.util.ArrayList;
 import java.util.List;

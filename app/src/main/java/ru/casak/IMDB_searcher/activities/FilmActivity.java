@@ -1,6 +1,5 @@
-package ru.casak.IMDB_searcher;
+package ru.casak.IMDB_searcher.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -11,7 +10,6 @@ import android.os.Bundle;
 import android.os.NetworkOnMainThreadException;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +23,10 @@ import android.support.v7.graphics.Palette;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import ru.casak.IMDB_searcher.services.FilmService;
+import ru.casak.IMDB_searcher.models.Movie;
+import ru.casak.IMDB_searcher.R;
+import ru.casak.IMDB_searcher.network.TMDBRetrofit;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -160,10 +162,10 @@ public class FilmActivity extends AppCompatActivity {
                         public void onNext(Movie movie) {
                             collapsingToolbarLayout.setTitle(movie.getTitle());
                             title.setText(resources.getString(R.string.film_title) + movie.getTitle());
-                            overview.setText(resources.getString(R.string.overview) + movie.getOverview());
-                            runtime.setText(resources.getString(R.string.runtime) + movie.getRuntime().toString());
-                            releaseDate.setText(resources.getString(R.string.release_date) + movie.getReleaseDate().toString());
-                            voteAverage.setText(resources.getString(R.string.vote_average) + movie.getVoteAverage().toString());
+                            overview.setText(resources.getString(R.string.film_overview) + movie.getOverview());
+                            runtime.setText(resources.getString(R.string.film_runtime) + movie.getRuntime().toString());
+                            releaseDate.setText(resources.getString(R.string.film_release_date) + movie.getReleaseDate().toString());
+                            voteAverage.setText(resources.getString(R.string.film_vote_average) + movie.getVoteAverage().toString());
 
                             Log.d(TAG, "Picasso`s URL: " + BASE_IMAGE_URL + IMAGE_SIZE + movie.getPoster_path());
                             Log.d(TAG, "onNext: " + movie.getTitle());
