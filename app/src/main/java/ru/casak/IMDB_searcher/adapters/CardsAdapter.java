@@ -41,6 +41,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position){
         final Context context = holder.getImageView().getContext();
+
         holder.getImageView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,7 +52,8 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
                 Log.d(TAG, "Element " + position + " clicked.");
             }
         });
-        if (movieList.size() != 0){
+
+        if ( movieList.size() != 0 ) {
             holder.getTextView().setText(movieList.get(position).getTitle());
             Picasso picasso = Picasso.with(context);
             picasso.setIndicatorsEnabled(true);
@@ -61,7 +63,8 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
                     .into(holder.getImageView());
             Log.d(TAG, "Element " + position + " set with: " + movieList.get(position).getTitle());
         }
-        else Log.d(TAG, "No elements was set");
+        else
+            Log.d(TAG, "No elements was set");
     }
 
     @Override

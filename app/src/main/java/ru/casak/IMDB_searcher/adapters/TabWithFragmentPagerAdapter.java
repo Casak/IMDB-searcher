@@ -17,13 +17,11 @@ public class TabWithFragmentPagerAdapter extends FragmentPagerAdapter {
     final int COMING_SOON_POSITION = 2;
     final int FAVORITES_POSITION = 3;
 
-    private Context context;
     private String tabTitles[];
 
 
     public TabWithFragmentPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
-        this.context = context;
         tabTitles = new String[] {
                 context.getResources().getString(R.string.top250_tab_title),
                 context.getResources().getString(R.string.coming_soon_tab_title),
