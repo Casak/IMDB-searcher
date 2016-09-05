@@ -3,9 +3,6 @@ package ru.casak.IMDB_searcher.models;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Casak on 28.03.2016.
- */
 public class MovieResults {
     private Integer page;
     private List<Movie> results  = new ArrayList<Movie>();

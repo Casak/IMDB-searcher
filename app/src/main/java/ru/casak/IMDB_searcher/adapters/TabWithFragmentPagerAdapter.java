@@ -13,9 +13,9 @@ import ru.casak.IMDB_searcher.fragments.Top250Fragment;
 
 public class TabWithFragmentPagerAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 3;
-    final int TOP250_POSITION = 1;
-    final int COMING_SOON_POSITION = 2;
-    final int FAVORITES_POSITION = 3;
+    final int TOP250_POSITION = 0;
+    final int COMING_SOON_POSITION = 1;
+    final int FAVORITES_POSITION = 2;
 
     private String tabTitles[];
 

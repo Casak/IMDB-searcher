@@ -6,4 +6,7 @@
     <color name="tab">#E1BEE7</color>
 
 
+    <!--Text colors-->
+    <color name="film_card_title">#ffffff</color>
+
 </resources>
