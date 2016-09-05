@@ -6,4 +6,7 @@
     <dimen name="card_height">270dp</dimen>
     <dimen name="card_margin">6dp</dimen>
     <dimen name="text_size">15sp</dimen>
+
+    <!--Film detail activity-->
+    <dimen name="card_film_title_text_size"></dimen>
 </resources>

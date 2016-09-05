@@ -16,9 +16,6 @@ import ru.casak.IMDB_searcher.R;
 import ru.casak.IMDB_searcher.activities.TabsActivity;
 import ru.casak.IMDB_searcher.services.FilmService;
 
-/**
- * Created by Casak on 01.04.2016.
- */
 public class TMDBRetrofit {
     private static final String TAG = "TMDBRetrofit";
     private static final String BASE_URL = "https://api.themoviedb.org/3/";

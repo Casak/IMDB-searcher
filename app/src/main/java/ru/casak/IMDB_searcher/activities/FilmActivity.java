@@ -31,9 +31,6 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Casak on 31.03.2016.
- */
 public class FilmActivity extends AppCompatActivity {
     private static final String TAG = "FilmActivity";
     private static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/";
@@ -66,7 +63,7 @@ public class FilmActivity extends AppCompatActivity {
         posterPath = intent.getStringExtra("poster_path");
 
         Log.d(TAG, "GetExtra: " + id);
-        setContentView(R.layout.activity_film);
+        setContentView(R.layout.activity_film_detail);
 
         ViewCompat.setTransitionName(findViewById(R.id.app_bar_layout), EXTRA_IMAGE);
         supportPostponeEnterTransition();

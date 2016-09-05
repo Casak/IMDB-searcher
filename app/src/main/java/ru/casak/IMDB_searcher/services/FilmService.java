@@ -7,9 +7,6 @@ import ru.casak.IMDB_searcher.models.Movie;
 import ru.casak.IMDB_searcher.models.MovieResults;
 import rx.Observable;
 
-/**
- * Created by Casak on 25.03.2016.
- */
 public interface FilmService {
     @GET("movie/top_rated")
     Observable<MovieResults> getTopRated(@Query("page") Integer page,
