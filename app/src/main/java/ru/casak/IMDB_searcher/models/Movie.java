@@ -5,9 +5,6 @@ import android.os.Parcel;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by Casak on 26.03.2016.
- */
 public class Movie{
     private Integer id;
     private String poster_path;
