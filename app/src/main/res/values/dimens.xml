@@ -8,5 +8,5 @@
     <dimen name="text_size">15sp</dimen>
 
     <!--Film detail activity-->
-    <dimen name="card_film_title_text_size"></dimen>
+    <dimen name="card_film_title_text_size">20sp</dimen>
 </resources>
