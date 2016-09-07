@@ -45,16 +45,53 @@ public class MovieDbHelperTest {
 
         mContext.deleteDatabase(MovieDbHelper.DATABASE_NAME);
         SQLiteDatabase testDB = mSQLiteOpenHelper.getWritableDatabase();
-        assertTrue("Error: database is closed", testDB.isOpen());
+        assertTrue("Error: Database is closed", testDB.isOpen());
 
         Cursor cursor = testDB.rawQuery("SELECT name FROM sqlite_master where type = 'table'", null);
-        assertTrue("Error: database is not created correctly", cursor.moveToFirst());
+        assertTrue("Error: Database is not created correctly", cursor.moveToFirst());
 
         do{
             tableNames.remove(cursor.getString(0));
         } while(cursor.moveToNext());
-        assertTrue("Error: database does not contains one or several tables", tableNames.isEmpty());
+        assertTrue("Error: Database does not contain one or several tables", tableNames.isEmpty());
     }
 
+    @Test
+    public void checkMovieTableColumns (){
+        final HashSet<String> columns = new HashSet<>();
+        columns.add(MovieContract.MovieEntry.COLUMN_ADULT);
+        columns.add(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH);
+        columns.add(MovieContract.MovieEntry.COLUMN_BUDGET);
+        columns.add(MovieContract.MovieEntry.COLUMN_COMPANIES);
+        columns.add(MovieContract.MovieEntry.COLUMN_COUNTRIES);
+        columns.add(MovieContract.MovieEntry.COLUMN_GENRES);
+        columns.add(MovieContract.MovieEntry.COLUMN_HOMEPAGE);
+        columns.add(MovieContract.MovieEntry.COLUMN_IMDB_ID);
+        columns.add(MovieContract.MovieEntry.COLUMN_ORIGINAL_LANGUAGE);
+        columns.add(MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE);
+        columns.add(MovieContract.MovieEntry.COLUMN_OVERVIEW);
+        columns.add(MovieContract.MovieEntry.COLUMN_POPULARITY);
+        columns.add(MovieContract.MovieEntry.COLUMN_POSTER_PATH);
+        columns.add(MovieContract.MovieEntry.COLUMN_RELEASE_DATE);
+        columns.add(MovieContract.MovieEntry.COLUMN_REVENUE);
+        columns.add(MovieContract.MovieEntry.COLUMN_RUNTIME);
+        columns.add(MovieContract.MovieEntry.COLUMN_SPOKEN_LANGUAGES);
+        columns.add(MovieContract.MovieEntry.COLUMN_STATUS);
+        columns.add(MovieContract.MovieEntry.COLUMN_TAGLINE);
+        columns.add(MovieContract.MovieEntry.COLUMN_TITLE);
+        columns.add(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE);
+        columns.add(MovieContract.MovieEntry.COLUMN_VOTE_COUNT);
 
+        SQLiteDatabase testDb = mSQLiteOpenHelper.getReadableDatabase();
+
+        Cursor cursor = testDb.rawQuery("PRAGMA table_info("+MovieContract.MovieEntry.TABLE_NAME+")", null);
+        assertTrue("Error: There is no info for table " + MovieContract.MovieEntry.TABLE_NAME, cursor.moveToFirst());
+
+        int columnNameIndex = cursor.getColumnIndex("name");
+        do{
+            columns.remove(cursor.getString(columnNameIndex));
+        }
+        while(cursor.moveToNext());
+        assertTrue("Error: Movie table does not contain one or more column", columns.isEmpty());
+    }
 }
