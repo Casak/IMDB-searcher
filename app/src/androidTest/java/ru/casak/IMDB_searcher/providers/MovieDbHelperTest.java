@@ -55,6 +55,7 @@ public class MovieDbHelperTest {
             tableNames.remove(cursor.getString(0));
         } while (cursor.moveToNext());
         assertTrue("Error: Database does not contain one or several tables", tableNames.isEmpty());
+        cursor.close();
     }
 
     @Test
@@ -80,5 +81,6 @@ public class MovieDbHelperTest {
         }
         while (cursor.moveToNext());
         assertTrue("Error: Movie table does not contain one or more column", columns.isEmpty());
+        cursor.close();
     }
 }
