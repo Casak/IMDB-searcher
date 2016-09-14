@@ -15,7 +15,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
     public MovieDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
-//TODO Test it, faggot!
+
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         final String CREATE_GENRE_TABLE = "CREATE TABLE " + GengeEntry.TABLE_NAME + " (" +
@@ -83,7 +83,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
         sqLiteDatabase.setTransactionSuccessful();
         sqLiteDatabase.endTransaction();
     }
-//TODO Implement onUpdrage
+//TODO Implement onUpgrage
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
