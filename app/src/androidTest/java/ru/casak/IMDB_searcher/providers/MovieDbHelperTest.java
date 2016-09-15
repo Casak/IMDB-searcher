@@ -43,6 +43,9 @@ public class MovieDbHelperTest {
         tableNames.add(MovieContract.CompanyEntry.TABLE_NAME);
         tableNames.add(MovieContract.CountryEntry.TABLE_NAME);
         tableNames.add(MovieContract.SpokenLanguagesEntry.TABLE_NAME);
+        tableNames.add(MovieContract.TopRatedEntry.TABLE_NAME);
+        tableNames.add(MovieContract.UpcomingEntry.TABLE_NAME);
+        tableNames.add(MovieContract.FavoritesEntry.TABLE_NAME);
 
         mContext.deleteDatabase(MovieDbHelper.DATABASE_NAME);
         SQLiteDatabase testDB = mSQLiteOpenHelper.getWritableDatabase();

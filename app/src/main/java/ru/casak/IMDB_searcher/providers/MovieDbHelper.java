@@ -74,12 +74,38 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 SpokenLanguagesEntry.TABLE_NAME + "(" + SpokenLanguagesEntry._ID + "),  " +
                 "UNIQUE (" + MovieEntry.COLUMN_IMDB_ID + ") ON CONFLICT REPLACE);"; //// TODO: 06.09.2016 Read about ON CONFLICT
 
+        final String CREATE_TOP_RATED_TABLE = "CREATE TABLE " + TopRatedEntry.TABLE_NAME + " (" +
+                TopRatedEntry._ID + " INTEGER PRIMARY KEY, " +
+                TopRatedEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL UNIQUE, " +
+                TopRatedEntry.COLUMN_POSITION + " INTEGER NOT NULL, " +
+                "FOREIGN KEY (" + TopRatedEntry.COLUMN_MOVIE_ID + ") REFERENCES " +
+                MovieEntry.TABLE_NAME + "(" + MovieEntry._ID + ")  " +
+                ");";
+
+        final String CREATE_UPCOMING_TABLE = "CREATE TABLE " + UpcomingEntry.TABLE_NAME + " (" +
+                UpcomingEntry._ID + " INTEGER PRIMARY KEY, " +
+                UpcomingEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL UNIQUE, " +
+                UpcomingEntry.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
+                "FOREIGN KEY (" + TopRatedEntry.COLUMN_MOVIE_ID + ") REFERENCES " +
+                MovieEntry.TABLE_NAME + "(" + MovieEntry._ID + ")  " +
+                ");";
+
+        final String CREATE_FAVORITES_TABLE = "CREATE TABLE " + FavoritesEntry.TABLE_NAME + " (" +
+                FavoritesEntry._ID + " INTEGER PRIMARY KEY, " +
+                FavoritesEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL UNIQUE, " +
+                "FOREIGN KEY (" + TopRatedEntry.COLUMN_MOVIE_ID + ") REFERENCES " +
+                MovieEntry.TABLE_NAME + "(" + MovieEntry._ID + ")  " +
+                ");";
+
         sqLiteDatabase.beginTransaction();
         sqLiteDatabase.execSQL(CREATE_GENRE_TABLE);
         sqLiteDatabase.execSQL(CREATE_COUNTRY_TABLE);
         sqLiteDatabase.execSQL(CREATE_COMPANY_TABLE);
         sqLiteDatabase.execSQL(CREATE_LANGUAGE_TABLE);
         sqLiteDatabase.execSQL(CREATE_MOVIE_TABLE);
+        sqLiteDatabase.execSQL(CREATE_TOP_RATED_TABLE);
+        sqLiteDatabase.execSQL(CREATE_UPCOMING_TABLE);
+        sqLiteDatabase.execSQL(CREATE_FAVORITES_TABLE);
         sqLiteDatabase.setTransactionSuccessful();
         sqLiteDatabase.endTransaction();
     }
