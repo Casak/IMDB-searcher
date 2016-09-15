@@ -2,24 +2,32 @@ package ru.casak.IMDB_searcher.models;
 
 import android.os.Parcel;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 import java.util.List;
 
 public class Movie{
     private Integer id;
     private boolean adult;
+    @SerializedName("backdrop_path")
     private String backdropPath;
     private Integer budget;
     private List<Genre> genres;
     private String homepage;
+    @SerializedName("imdb_id")
     private String imdbID;
+    @SerializedName("original_language")
     private String originalLanguage;
+    @SerializedName("imdb_id")
     private String originalTitle;
     private String overview;
     private String popularity;
+    @SerializedName("imdb_id")
     private String posterPath;
     private List<Company> companies;
     private List<Country> countries;
+    @SerializedName("release_date")
     private String releaseDate;
     private Integer revenue;
     private Integer runtime;
@@ -27,7 +35,9 @@ public class Movie{
     private String status;
     private String tagline;
     private String title;
+    @SerializedName("vote_Average")
     private Double voteAverage;
+    @SerializedName("vote_count")
     private Long voteCount;
 
     public Movie(){}
@@ -36,16 +46,16 @@ public class Movie{
         id = parcel.readInt();
     }
 
-    public boolean isAdult() {
-        return adult;
-    }
-
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public boolean isAdult() {
+        return adult;
     }
 
     public void setAdult(boolean adult) {
