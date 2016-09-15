@@ -63,7 +63,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 MovieEntry.COLUMN_TAGLINE + " TEXT, " +
                 MovieEntry.COLUMN_TITLE + " TEXT, " +
                 MovieEntry.COLUMN_VOTE_AVERAGE + " REAL, " +
-                MovieEntry.COLUMN_VOTE_COUNT + " REAL, " +
+                MovieEntry.COLUMN_VOTE_COUNT + " INTEGER, " +
                 "FOREIGN KEY (" + MovieEntry.COLUMN_GENRES + ") REFERENCES " +
                 GengeEntry.TABLE_NAME + "(" + GengeEntry._ID + "),  " +
                 "FOREIGN KEY (" + MovieEntry.COLUMN_COUNTRIES + ") REFERENCES " +
