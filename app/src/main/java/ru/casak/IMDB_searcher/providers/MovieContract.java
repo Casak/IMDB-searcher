@@ -31,6 +31,7 @@ public class MovieContract {
     public static final String PATH_UPCOMING = "upcoming";
 
     public static final String PATH_FAVORITES = "favorites";
+    public static final String PATH_FAVORITE = "favorite";
 
     public static final class MovieEntry implements BaseColumns{
 
@@ -169,6 +170,9 @@ public class MovieContract {
 
         public static final String CONTENT_DIR_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_FAVORITES;
+
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_FAVORITE;
 
         public static final String TABLE_NAME = "favorites";
 

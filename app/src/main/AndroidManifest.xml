@@ -25,6 +25,10 @@
             android:label="@string/app_name"
             android:theme="@style/MovieDetailTheme">
         </activity>
+
+        <provider
+            android:authorities="ru.casak.IMDB_searcher"
+            android:name=".providers.TMDBContentProvider"/>
     </application>
 
 
