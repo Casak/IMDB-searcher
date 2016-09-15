@@ -47,7 +47,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
             public void onClick(View view) {
                 Intent intent = new Intent(context, FilmActivity.class);
                 intent.putExtra("id", movieList.get(position).getId());
-                intent.putExtra("poster_path", movieList.get(position).getPoster_path());
+                intent.putExtra("poster_path", movieList.get(position).getPosterPath());
                 context.startActivity(intent);
                 Log.d(TAG, "Element " + position + " clicked.");
             }
@@ -58,7 +58,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
             Picasso picasso = Picasso.with(context);
             picasso.setIndicatorsEnabled(true);
             picasso
-                    .load(BASE_IMAGE_URL + IMAGE_SIZE + movieList.get(position).getPoster_path())
+                    .load(BASE_IMAGE_URL + IMAGE_SIZE + movieList.get(position).getPosterPath())
                     .placeholder(R.drawable.progress_spinner)
                     .into(holder.getImageView());
             Log.d(TAG, "Element " + position + " set with: " + movieList.get(position).getTitle());
