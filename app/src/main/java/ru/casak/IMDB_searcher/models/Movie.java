@@ -19,11 +19,11 @@ public class Movie{
     private String imdbID;
     @SerializedName("original_language")
     private String originalLanguage;
-    @SerializedName("imdb_id")
+    @SerializedName("original_title")
     private String originalTitle;
     private String overview;
     private String popularity;
-    @SerializedName("imdb_id")
+    @SerializedName("poster_path")
     private String posterPath;
     private List<Company> companies;
     private List<Country> countries;
@@ -35,7 +35,7 @@ public class Movie{
     private String status;
     private String tagline;
     private String title;
-    @SerializedName("vote_Average")
+    @SerializedName("vote_average")
     private Double voteAverage;
     @SerializedName("vote_count")
     private Long voteCount;
