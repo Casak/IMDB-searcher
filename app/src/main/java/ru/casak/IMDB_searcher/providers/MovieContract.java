@@ -26,6 +26,12 @@ public class MovieContract {
     public static final String PATH_LANGUAGES = "languages";
     public static final String PATH_LANGUAGE = "language";
 
+    public static final String PATH_TOP_RATED = "top_rated";
+
+    public static final String PATH_UPCOMING = "upcoming";
+
+    public static final String PATH_FAVORITES = "favorites";
+
     public static final class MovieEntry implements BaseColumns{
 
         public static final Uri CONTENT_URI =
@@ -130,7 +136,44 @@ public class MovieContract {
         public static final String COLUMN_NAME = "name";
     }
 
+    public static final class TopRatedEntry implements BaseColumns{
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_TOP_RATED).build();
 
+        public static final String CONTENT_DIR_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_TOP_RATED;
+
+        public static final String TABLE_NAME = "top_rated";
+
+        public static final String COLUMN_MOVIE_ID = "movie_id";
+        public static final String COLUMN_POSITION = "position";
+    }
+
+    public static final class UpcomingEntry implements BaseColumns{
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_UPCOMING).build();
+
+        public static final String CONTENT_DIR_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_UPCOMING;
+
+        public static final String TABLE_NAME = "upcoming";
+
+        public static final String COLUMN_MOVIE_ID = "movie_id";
+        public static final String COLUMN_RELEASE_DATE = "date";
+    }
+
+
+    public static final class FavoritesEntry implements BaseColumns{
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_FAVORITES).build();
+
+        public static final String CONTENT_DIR_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_FAVORITES;
+
+        public static final String TABLE_NAME = "favorites";
+
+        public static final String COLUMN_MOVIE_ID = "movie_id";
+    }
 
 
 
