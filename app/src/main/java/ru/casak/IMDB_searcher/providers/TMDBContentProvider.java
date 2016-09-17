@@ -10,6 +10,9 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
+import ru.casak.IMDB_searcher.database.MovieContract;
+import ru.casak.IMDB_searcher.database.MovieDbHelper;
+
 public class TMDBContentProvider extends ContentProvider {
     private static final String TAG = TMDBContentProvider.class.getSimpleName();
 
@@ -25,6 +28,7 @@ public class TMDBContentProvider extends ContentProvider {
     static final int COUNTRIES = 44;
     static final int GENRE = 5;
     static final int GENRES = 55;
+    static final int MOVIE_GENRES = 66;
     static final int TOP_RATED = 250;
     static final int UPCOMING = 500;
     static final int FAVORITE = 100;
@@ -34,16 +38,17 @@ public class TMDBContentProvider extends ContentProvider {
     private static final SQLiteQueryBuilder sTopRatedQueryBuilder;
     private static final SQLiteQueryBuilder sUpcomingQueryBuilder;
     private static final SQLiteQueryBuilder sFavoritesQueryBuilder;
+    private static final SQLiteQueryBuilder sGenresQueryBuilder;
+
     static {
         sMovieQueryBuilder = new SQLiteQueryBuilder();
         sTopRatedQueryBuilder = new SQLiteQueryBuilder();
         sUpcomingQueryBuilder = new SQLiteQueryBuilder();
         sFavoritesQueryBuilder = new SQLiteQueryBuilder();
+        sGenresQueryBuilder = new SQLiteQueryBuilder();
 
-        //movie INNER JOIN genre, country, company, language ON movie.genres = genre._id,
-        //movie.countries = country._id, movie.companies = company._id,
-        //movie.spoken_languages = language._id
-        sMovieQueryBuilder.setTables(MovieContract.MovieEntry.TABLE_NAME +
+        sMovieQueryBuilder.setTables(MovieContract.MovieEntry.TABLE_NAME
+         /*       +
                 " INNER JOIN " +
                 MovieContract.GengeEntry.TABLE_NAME + " ON " +
                 MovieContract.MovieEntry.TABLE_NAME + "." +
@@ -67,7 +72,8 @@ public class TMDBContentProvider extends ContentProvider {
                 MovieContract.MovieEntry.TABLE_NAME + "." +
                 MovieContract.MovieEntry.COLUMN_SPOKEN_LANGUAGES + " = " +
                 MovieContract.SpokenLanguagesEntry.TABLE_NAME + "." +
-                MovieContract.SpokenLanguagesEntry._ID);
+                MovieContract.SpokenLanguagesEntry._ID*/
+        );
 
         sTopRatedQueryBuilder.setTables(
                 MovieContract.TopRatedEntry.TABLE_NAME +
@@ -95,6 +101,9 @@ public class TMDBContentProvider extends ContentProvider {
                         MovieContract.FavoritesEntry.COLUMN_MOVIE_ID + " = " +
                         MovieContract.MovieEntry.TABLE_NAME + "." +
                         MovieContract.MovieEntry._ID);
+
+        sGenresQueryBuilder.setTables(
+                MovieContract.GengeEntry.TABLE_NAME);
     }
 
     private static UriMatcher uriMatcher = buildUriMatcher();
@@ -111,11 +120,10 @@ public class TMDBContentProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
                         String sortOrder) {
-        Cursor cursor;
-
-        switch (uriMatcher.match(uri)){
+        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
+        switch (uriMatcher.match(uri)) {
             case MOVIES:
-                return sMovieQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                return sMovieQueryBuilder.query(db,
                         projection,
                         selection,
                         selectionArgs,
@@ -125,8 +133,8 @@ public class TMDBContentProvider extends ContentProvider {
             case MOVIE:
                 selection = MovieContract.MovieEntry.TABLE_NAME + "." +
                         MovieContract.MovieEntry._ID + " = ?";
-                selectionArgs = new String[]{ uri.getLastPathSegment() };
-                return sMovieQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                selectionArgs = new String[]{uri.getLastPathSegment()};
+                return sMovieQueryBuilder.query(db,
                         projection,
                         selection,
                         selectionArgs,
@@ -134,7 +142,7 @@ public class TMDBContentProvider extends ContentProvider {
                         null,
                         sortOrder);
             case TOP_RATED:
-                return sTopRatedQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                return sTopRatedQueryBuilder.query(db,
                         projection,
                         selection,
                         selectionArgs,
@@ -142,7 +150,7 @@ public class TMDBContentProvider extends ContentProvider {
                         null,
                         sortOrder);
             case UPCOMING:
-                return sUpcomingQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                return sUpcomingQueryBuilder.query(db,
                         projection,
                         selection,
                         selectionArgs,
@@ -150,13 +158,30 @@ public class TMDBContentProvider extends ContentProvider {
                         null,
                         sortOrder);
             case FAVORITES:
-                return sFavoritesQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                return sFavoritesQueryBuilder.query(db,
                         projection,
                         selection,
                         selectionArgs,
                         null,
                         null,
                         sortOrder);
+            case GENRES:
+                return sGenresQueryBuilder.query(db,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+            case MOVIE_GENRES:
+                return sGenresQueryBuilder.query(db,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -166,7 +191,7 @@ public class TMDBContentProvider extends ContentProvider {
     @Override
     public String getType(Uri uri) {
         final int match = uriMatcher.match(uri);
-        switch (match){
+        switch (match) {
             case MOVIES:
                 return MovieContract.MovieEntry.CONTENT_DIR_TYPE;
             case MOVIE:
@@ -191,6 +216,8 @@ public class TMDBContentProvider extends ContentProvider {
                 return MovieContract.SpokenLanguagesEntry.CONTENT_DIR_TYPE;
             case LANGUAGE:
                 return MovieContract.SpokenLanguagesEntry.CONTENT_ITEM_TYPE;
+            case MOVIE_GENRES:
+                return MovieContract.MovieGenreJunctionEntry.CONTENT_DIR_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -204,94 +231,45 @@ public class TMDBContentProvider extends ContentProvider {
         Uri result;
         long _id;
 
-        switch (match){
+        switch (match) {
             case MOVIE:
                 _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, contentValues);
-                if(_id > 0)
-                    result = ContentUris.withAppendedId(uri, _id);
-                else
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                break;
-            case TOP_RATED:
-                _id = db.insert(MovieContract.TopRatedEntry.TABLE_NAME, null, contentValues);
-                if(_id > 0)
-                    result = ContentUris.withAppendedId(uri, _id);
-                else
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                break;
-            case UPCOMING:
-                _id = db.insert(MovieContract.UpcomingEntry.TABLE_NAME, null, contentValues);
-                if(_id > 0)
-                    result = ContentUris.withAppendedId(uri, _id);
-                else
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                break;
-            case FAVORITES://TODO Create batch insert
-                _id = db.insert(MovieContract.FavoritesEntry.TABLE_NAME, null, contentValues);
-                if(_id > 0)
+                if (_id > 0)
                     result = ContentUris.withAppendedId(uri, _id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             case FAVORITE:
                 _id = db.insert(MovieContract.FavoritesEntry.TABLE_NAME, null, contentValues);
-                if(_id > 0)
-                    result = ContentUris.withAppendedId(uri, _id);
-                else
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                break;
-            case GENRES://TODO Create batch insert
-                _id = db.insert(MovieContract.GengeEntry.TABLE_NAME, null, contentValues);
-                if(_id > 0)
+                if (_id > 0)
                     result = ContentUris.withAppendedId(uri, _id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             case GENRE:
                 _id = db.insert(MovieContract.GengeEntry.TABLE_NAME, null, contentValues);
-                if(_id > 0)
-                    result = ContentUris.withAppendedId(uri, _id);
-                else
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                break;
-            case COMPANIES://TODO Create batch insert
-                _id = db.insert(MovieContract.CompanyEntry.TABLE_NAME, null, contentValues);
-                if(_id > 0)
+                if (_id > 0)
                     result = ContentUris.withAppendedId(uri, _id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             case COMPANY:
                 _id = db.insert(MovieContract.CompanyEntry.TABLE_NAME, null, contentValues);
-                if(_id > 0)
-                    result = ContentUris.withAppendedId(uri, _id);
-                else
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                break;
-            case COUNTRIES://TODO Create batch insert
-                _id = db.insert(MovieContract.CountryEntry.TABLE_NAME, null, contentValues);
-                if(_id > 0)
+                if (_id > 0)
                     result = ContentUris.withAppendedId(uri, _id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             case COUNTRY:
                 _id = db.insert(MovieContract.CountryEntry.TABLE_NAME, null, contentValues);
-                if(_id > 0)
-                    result = ContentUris.withAppendedId(uri, _id);
-                else
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                break;
-            case LANGUAGES://TODO Create batch insert
-                _id = db.insert(MovieContract.SpokenLanguagesEntry.TABLE_NAME, null, contentValues);
-                if(_id > 0)
+                if (_id > 0)
                     result = ContentUris.withAppendedId(uri, _id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             case LANGUAGE:
                 _id = db.insert(MovieContract.SpokenLanguagesEntry.TABLE_NAME, null, contentValues);
-                if(_id > 0)
+                if (_id > 0)
                     result = ContentUris.withAppendedId(uri, _id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
@@ -302,6 +280,74 @@ public class TMDBContentProvider extends ContentProvider {
         getContext().getContentResolver().notifyChange(uri, null);
 
         return result;
+    }
+    //TODO Implement all cases
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final int match = uriMatcher.match(uri);
+        int returnCount = 0;
+
+        switch (match) {
+            case GENRES:
+                db.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(MovieContract.GengeEntry.TABLE_NAME, null, value);
+                        if (_id > 0)
+                            returnCount++;
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
+            case MOVIE_GENRES:
+                db.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(MovieContract.MovieGenreJunctionEntry.TABLE_NAME,
+                                null,
+                                value);
+                        if (_id > 0)
+                            returnCount++;
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
+            case TOP_RATED:
+                db.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(MovieContract.TopRatedEntry.TABLE_NAME,
+                                null,
+                                value);
+                        if (_id > 0)
+                            returnCount++;
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
+            case UPCOMING:
+                throw new android.database.SQLException("Failed to insert row into " + uri);
+            case LANGUAGES:
+                throw new android.database.SQLException("Failed to insert row into " + uri);
+            case COUNTRIES:
+                throw new android.database.SQLException("Failed to insert row into " + uri);
+            case COMPANIES:
+                throw new android.database.SQLException("Failed to insert row into " + uri);
+            case FAVORITES:
+                throw new android.database.SQLException("Failed to insert row into " + uri);
+            default:
+                return super.bulkInsert(uri, values);
+        }
     }
 
     @Override
@@ -314,7 +360,7 @@ public class TMDBContentProvider extends ContentProvider {
         return 0;
     }
 
-    static UriMatcher buildUriMatcher(){
+    static UriMatcher buildUriMatcher() {
         UriMatcher result = new UriMatcher(UriMatcher.NO_MATCH);
 
         result.addURI(AUTHORITY, MovieContract.PATH_MOVIES, MOVIES);
@@ -331,6 +377,8 @@ public class TMDBContentProvider extends ContentProvider {
 
         result.addURI(AUTHORITY, MovieContract.PATH_GENRE, GENRE);
         result.addURI(AUTHORITY, MovieContract.PATH_GENRES, GENRES);
+
+        result.addURI(AUTHORITY, MovieContract.PATH_MOVIE_GENRES, MOVIE_GENRES);
 
         result.addURI(AUTHORITY, MovieContract.PATH_TOP_RATED, TOP_RATED);
 

@@ -19,6 +19,9 @@ import org.mockito.Mock;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 
+import ru.casak.IMDB_searcher.database.MovieContract;
+import ru.casak.IMDB_searcher.database.MovieDbHelper;
+
 public class MovieDbHelperTest {
 
     @Mock
@@ -40,6 +43,7 @@ public class MovieDbHelperTest {
         final HashSet<String> tableNames = new HashSet<>();
         tableNames.add(MovieContract.MovieEntry.TABLE_NAME);
         tableNames.add(MovieContract.GengeEntry.TABLE_NAME);
+        tableNames.add(MovieContract.MovieGenreJunctionEntry.TABLE_NAME);
         tableNames.add(MovieContract.CompanyEntry.TABLE_NAME);
         tableNames.add(MovieContract.CountryEntry.TABLE_NAME);
         tableNames.add(MovieContract.SpokenLanguagesEntry.TABLE_NAME);

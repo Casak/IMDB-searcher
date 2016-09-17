@@ -42,6 +42,37 @@ public class Movie{
 
     public Movie(){}
 
+    public Movie(Integer id, boolean adult, String backdropPath, Integer budget, List<Genre> genres,
+                 String homepage, String imdbID, String originalLanguage, String originalTitle,
+                 String overview, String popularity,  String posterPath, List<Company> companies,
+                 List<Country> countries,  String releaseDate, Integer revenue, Integer runtime,
+                 List<Language> languages, String status, String tagline, String title,
+                 Double voteAverage, Long voteCount){
+        this.id = id;
+        this.adult = adult;
+        this.backdropPath = backdropPath;
+        this.budget = budget;
+        this.genres = genres;
+        this.homepage = homepage;
+        this.imdbID = imdbID;
+        this.originalLanguage = originalLanguage;
+        this.originalTitle = originalTitle;
+        this.overview = overview;
+        this.popularity = popularity;
+        this.posterPath = posterPath;
+        this.companies = companies;
+        this.countries = countries;
+        this.releaseDate = releaseDate;
+        this.revenue = revenue;
+        this.runtime = runtime;
+        this.languages = languages;
+        this.status = status;
+        this.tagline = tagline;
+        this.title = title;
+        this.voteAverage = voteAverage;
+        this.voteCount = voteCount;
+    }
+
     public Movie(Parcel parcel){
         id = parcel.readInt();
     }
@@ -228,144 +259,5 @@ public class Movie{
 
     public void setVoteCount(Long voteCount) {
         this.voteCount = voteCount;
-    }
-}
-
-class Genre{
-    private Integer id;
-    private String name;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-}
-
-class Company{
-    private Integer id;
-    private String description;
-    private String headquarters;
-    private String homepage;
-    private String logoPath;
-    private String name;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getHeadquarters() {
-        return headquarters;
-    }
-
-    public void setHeadquarters(String headquarters) {
-        this.headquarters = headquarters;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getHomepage() {
-        return homepage;
-    }
-
-    public void setHomepage(String homepage) {
-        this.homepage = homepage;
-    }
-
-    public String getLogoPath() {
-        return logoPath;
-    }
-
-    public void setLogoPath(String logoPath) {
-        this.logoPath = logoPath;
-    }
-}
-
-class Country{
-    private Integer id;
-    private String name;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getIso() {
-        return iso;
-    }
-
-    public void setIso(String iso) {
-        this.iso = iso;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    private String iso;
-}
-
-class Language{
-    private Integer id;
-    private String name;
-    private String iso;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getIso() {
-        return iso;
-    }
-
-    public void setIso(String iso) {
-        this.iso = iso;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

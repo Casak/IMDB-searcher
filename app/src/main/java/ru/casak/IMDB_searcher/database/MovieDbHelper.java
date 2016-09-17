@@ -1,10 +1,10 @@
-package ru.casak.IMDB_searcher.providers;
+package ru.casak.IMDB_searcher.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import ru.casak.IMDB_searcher.providers.MovieContract.*;
+import ru.casak.IMDB_searcher.database.MovieContract.*;
 
 public class MovieDbHelper extends SQLiteOpenHelper {
     public static final String TAG = MovieDbHelper.class.getSimpleName();
@@ -45,7 +45,6 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 MovieEntry.COLUMN_ADULT + " TEXT, " +
                 MovieEntry.COLUMN_BACKDROP_PATH + " TEXT, " +
                 MovieEntry.COLUMN_BUDGET + " INTEGER, " +
-                MovieEntry.COLUMN_GENRES + " INTEGER NOT NULL, " +
                 MovieEntry.COLUMN_HOMEPAGE + " TEXT, " +
                 MovieEntry.COLUMN_IMDB_ID + " TEXT, " +
                 MovieEntry.COLUMN_ORIGINAL_LANGUAGE + " TEXT, " +
@@ -53,29 +52,18 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 MovieEntry.COLUMN_OVERVIEW + " TEXT, " +
                 MovieEntry.COLUMN_POPULARITY + " TEXT, " +
                 MovieEntry.COLUMN_POSTER_PATH + " TEXT, " +
-                MovieEntry.COLUMN_COMPANIES + " INTEGER NOT NULL, " +
-                MovieEntry.COLUMN_COUNTRIES + " INTEGER NOT NULL, " +
                 MovieEntry.COLUMN_RELEASE_DATE + " TEXT, " +
                 MovieEntry.COLUMN_REVENUE + " INTEGER, " +
                 MovieEntry.COLUMN_RUNTIME + " INTEGER, " +
-                MovieEntry.COLUMN_SPOKEN_LANGUAGES + " INTEGER NOT NULL, " +
                 MovieEntry.COLUMN_STATUS + " TEXT, " +
                 MovieEntry.COLUMN_TAGLINE + " TEXT, " +
                 MovieEntry.COLUMN_TITLE + " TEXT, " +
                 MovieEntry.COLUMN_VOTE_AVERAGE + " REAL, " +
                 MovieEntry.COLUMN_VOTE_COUNT + " INTEGER, " +
-                "FOREIGN KEY (" + MovieEntry.COLUMN_GENRES + ") REFERENCES " +
-                GengeEntry.TABLE_NAME + "(" + GengeEntry._ID + "),  " +
-                "FOREIGN KEY (" + MovieEntry.COLUMN_COUNTRIES + ") REFERENCES " +
-                CountryEntry.TABLE_NAME + "(" + CountryEntry._ID + "),  " +
-                "FOREIGN KEY (" + MovieEntry.COLUMN_COMPANIES + ") REFERENCES " +
-                CompanyEntry.TABLE_NAME + "(" + CompanyEntry._ID + "),  " +
-                "FOREIGN KEY (" + MovieEntry.COLUMN_SPOKEN_LANGUAGES + ") REFERENCES " +
-                SpokenLanguagesEntry.TABLE_NAME + "(" + SpokenLanguagesEntry._ID + "),  " +
                 "UNIQUE (" + MovieEntry.COLUMN_IMDB_ID + ") ON CONFLICT REPLACE);"; //// TODO: 06.09.2016 Read about ON CONFLICT
 
         final String CREATE_TOP_RATED_TABLE = "CREATE TABLE " + TopRatedEntry.TABLE_NAME + " (" +
-                TopRatedEntry._ID + " INTEGER PRIMARY KEY, " +
+                TopRatedEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 TopRatedEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL UNIQUE, " +
                 TopRatedEntry.COLUMN_POSITION + " INTEGER NOT NULL, " +
                 "FOREIGN KEY (" + TopRatedEntry.COLUMN_MOVIE_ID + ") REFERENCES " +
@@ -86,15 +74,24 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 UpcomingEntry._ID + " INTEGER PRIMARY KEY, " +
                 UpcomingEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL UNIQUE, " +
                 UpcomingEntry.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
-                "FOREIGN KEY (" + TopRatedEntry.COLUMN_MOVIE_ID + ") REFERENCES " +
+                "FOREIGN KEY (" + UpcomingEntry.COLUMN_MOVIE_ID + ") REFERENCES " +
                 MovieEntry.TABLE_NAME + "(" + MovieEntry._ID + ")  " +
                 ");";
 
         final String CREATE_FAVORITES_TABLE = "CREATE TABLE " + FavoritesEntry.TABLE_NAME + " (" +
                 FavoritesEntry._ID + " INTEGER PRIMARY KEY, " +
                 FavoritesEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL UNIQUE, " +
-                "FOREIGN KEY (" + TopRatedEntry.COLUMN_MOVIE_ID + ") REFERENCES " +
+                "FOREIGN KEY (" + FavoritesEntry.COLUMN_MOVIE_ID + ") REFERENCES " +
                 MovieEntry.TABLE_NAME + "(" + MovieEntry._ID + ")  " +
+                ");";
+
+        final String CREATE_MOVIE_GENRE_JUNCTION_TABLE = "CREATE TABLE " + MovieGenreJunctionEntry.TABLE_NAME + " (" +
+                MovieGenreJunctionEntry.COLUMN_FILM_ID + " INTEGER NOT NULL, " +
+                MovieGenreJunctionEntry.COLUMN_GENRE_ID + " INTEGER NOT NULL, " +
+                "FOREIGN KEY (" + MovieGenreJunctionEntry.COLUMN_FILM_ID + ") REFERENCES " +
+                MovieEntry.TABLE_NAME + "(" + MovieEntry._ID + ")  " +
+                "FOREIGN KEY (" + MovieGenreJunctionEntry.COLUMN_GENRE_ID + ") REFERENCES " +
+                GengeEntry.TABLE_NAME + "(" + GengeEntry._ID + ")  " +
                 ");";
 
         sqLiteDatabase.beginTransaction();
@@ -103,6 +100,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_COMPANY_TABLE);
         sqLiteDatabase.execSQL(CREATE_LANGUAGE_TABLE);
         sqLiteDatabase.execSQL(CREATE_MOVIE_TABLE);
+        sqLiteDatabase.execSQL(CREATE_MOVIE_GENRE_JUNCTION_TABLE);
         sqLiteDatabase.execSQL(CREATE_TOP_RATED_TABLE);
         sqLiteDatabase.execSQL(CREATE_UPCOMING_TABLE);
         sqLiteDatabase.execSQL(CREATE_FAVORITES_TABLE);

@@ -13,8 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ru.casak.IMDB_searcher.adapters.CardsAdapter;
+import ru.casak.IMDB_searcher.database.DbUtils;
 import ru.casak.IMDB_searcher.services.FilmService;
 import ru.casak.IMDB_searcher.models.Movie;
 import ru.casak.IMDB_searcher.models.MovieResults;
@@ -30,6 +32,7 @@ public class Top250Fragment extends Fragment {
     private static final String TAG = Top250Fragment.class.getSimpleName();
     private static final int SPAN_COUNT = 2;
     private static final int PAGE_NUMBER = 1;
+    private static final int MOVIES_PER_PAGE = 20;
     private final CardsAdapter cardsAdapter = new CardsAdapter(new ArrayList<Movie>());
     private RecyclerView mRecyclerView;
     private boolean loading = true;
@@ -63,7 +66,7 @@ public class Top250Fragment extends Fragment {
                 if (loading) {
                     if ( (visibleItemCount + pastVisibleItems) >= totalItemCount) {
                         loading = false;
-                        int page = (cardsAdapter.getItemCount() / 20) + 1;
+                        int page = (cardsAdapter.getItemCount() / MOVIES_PER_PAGE) + 1;
                         if (page <= 20) loadData(page);
                     }
                 }
@@ -73,17 +76,23 @@ public class Top250Fragment extends Fragment {
         return rootView;
     }
 
-    private void loadData(int page){
-        FilmService filmService = TMDBRetrofit.getFilmServiceInstance();
+    private void loadData(final int page){
+        List<Movie> movies = DbUtils.getTopRatedMovies(page*MOVIES_PER_PAGE-MOVIES_PER_PAGE, page*MOVIES_PER_PAGE,
+                getContext().getContentResolver());
 
-        Observable<MovieResults> observable = filmService.getTopRated(page, "en");
+
         try {
-            observable
+            TMDBRetrofit
+                    .getFilmServiceInstance()
+                    .getTopRated(page, "en")
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .flatMap(new Func1<MovieResults, Observable<Movie>>() {
                         @Override
                         public Observable<Movie> call(MovieResults movieResults) {
+                            DbUtils.addTopRatedMovies(movieResults.getResults(),
+                                    getContext().getContentResolver(),
+                                    (page*MOVIES_PER_PAGE-MOVIES_PER_PAGE));
                             return Observable.from(movieResults.getResults());
                         }
                     })
