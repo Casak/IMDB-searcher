@@ -336,7 +336,21 @@ public class TMDBContentProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(uri, null);
                 return returnCount;
             case UPCOMING:
-                throw new android.database.SQLException("Failed to insert row into " + uri);
+                db.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(MovieContract.UpcomingEntry.TABLE_NAME,
+                                null,
+                                value);
+                        if (_id > 0)
+                            returnCount++;
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
             case LANGUAGES:
                 throw new android.database.SQLException("Failed to insert row into " + uri);
             case COUNTRIES:

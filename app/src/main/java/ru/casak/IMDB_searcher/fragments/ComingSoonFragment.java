@@ -13,8 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ru.casak.IMDB_searcher.adapters.CardsAdapter;
+import ru.casak.IMDB_searcher.database.DbUtils;
 import ru.casak.IMDB_searcher.services.FilmService;
 import ru.casak.IMDB_searcher.models.Movie;
 import ru.casak.IMDB_searcher.models.MovieResults;
@@ -29,6 +31,7 @@ import rx.schedulers.Schedulers;
 public class ComingSoonFragment extends Fragment {
     private static final String TAG = "ComingSoonFragment";
     private static final int SPAN_COUNT = 2;
+    private static final int MOVIES_PER_PAGE = 20;
     private CardsAdapter cardsAdapter = new CardsAdapter(new ArrayList<Movie>());
     private RecyclerView mRecyclerView;
     private boolean loading = true;
@@ -72,16 +75,25 @@ public class ComingSoonFragment extends Fragment {
     }
 
     private void loadData(int page){
-        FilmService filmService = TMDBRetrofit.getFilmServiceInstance();
+        List<Movie> movies = DbUtils.getUpcomingMovies(page * MOVIES_PER_PAGE - MOVIES_PER_PAGE, page * MOVIES_PER_PAGE,
+                getContext().getContentResolver());
 
-        Observable<MovieResults> observable = filmService.getUpcoming(page, "en");
-        try {
-            observable
+        if (movies != null && movies.size() == MOVIES_PER_PAGE) {
+            for (Movie movie : movies) {
+                cardsAdapter.getMovieList().add(movie);
+                cardsAdapter.notifyItemRangeInserted(cardsAdapter.getMovieList().size() - 1, 1);
+            }
+        } else {
+            TMDBRetrofit
+                    .getFilmServiceInstance()
+                    .getUpcoming(page, "en")
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .flatMap(new Func1<MovieResults, Observable<Movie>>() {
                         @Override
                         public Observable<Movie> call(MovieResults movieResults) {
+                            DbUtils.addUpcomingMovies(movieResults.getResults(),
+                                    getContext().getContentResolver());
                             return Observable.from(movieResults.getResults());
                         }
                     })
@@ -102,16 +114,10 @@ public class ComingSoonFragment extends Fragment {
                         @Override
                         public void onNext(Movie movie) {
                             cardsAdapter.getMovieList().add(movie);
-
                             cardsAdapter.notifyItemRangeInserted(cardsAdapter.getMovieList().size() - 1, 1);
                             Log.d(TAG, "onNext: " + movie.getTitle());
                         }
                     });
         }
-        catch (NetworkOnMainThreadException e ){
-            Log.d(TAG, "Caught:");
-            e.printStackTrace();
-        }
     }
-
 }

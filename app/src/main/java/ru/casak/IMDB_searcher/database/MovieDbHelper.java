@@ -71,7 +71,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 ");";
 
         final String CREATE_UPCOMING_TABLE = "CREATE TABLE " + UpcomingEntry.TABLE_NAME + " (" +
-                UpcomingEntry._ID + " INTEGER PRIMARY KEY, " +
+                UpcomingEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 UpcomingEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL UNIQUE, " +
                 UpcomingEntry.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
                 "FOREIGN KEY (" + UpcomingEntry.COLUMN_MOVIE_ID + ") REFERENCES " +
@@ -79,7 +79,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 ");";
 
         final String CREATE_FAVORITES_TABLE = "CREATE TABLE " + FavoritesEntry.TABLE_NAME + " (" +
-                FavoritesEntry._ID + " INTEGER PRIMARY KEY, " +
+                FavoritesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 FavoritesEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL UNIQUE, " +
                 "FOREIGN KEY (" + FavoritesEntry.COLUMN_MOVIE_ID + ") REFERENCES " +
                 MovieEntry.TABLE_NAME + "(" + MovieEntry._ID + ")  " +
