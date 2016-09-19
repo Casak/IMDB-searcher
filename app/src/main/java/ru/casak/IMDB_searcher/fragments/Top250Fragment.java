@@ -39,7 +39,7 @@ public class Top250Fragment extends Fragment {
     private int pastVisibleItems, visibleItemCount, totalItemCount;
 
     @Override
-    public void onCreate (Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loadData(PAGE_NUMBER);
         Log.d(TAG, "onCreate finished");
@@ -52,7 +52,7 @@ public class Top250Fragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_page, container, false);
 
-        mRecyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerView);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(cardsAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -64,7 +64,7 @@ public class Top250Fragment extends Fragment {
                 pastVisibleItems = mLayoutManager.findFirstVisibleItemPosition();
 
                 if (loading) {
-                    if ( (visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                         loading = false;
                         int page = (cardsAdapter.getItemCount() / MOVIES_PER_PAGE) + 1;
                         if (page <= 20) loadData(page);
@@ -76,12 +76,16 @@ public class Top250Fragment extends Fragment {
         return rootView;
     }
 
-    private void loadData(final int page){
-        List<Movie> movies = DbUtils.getTopRatedMovies(page*MOVIES_PER_PAGE-MOVIES_PER_PAGE, page*MOVIES_PER_PAGE,
+    private void loadData(final int page) {
+        List<Movie> movies = DbUtils.getTopRatedMovies(page * MOVIES_PER_PAGE - MOVIES_PER_PAGE, page * MOVIES_PER_PAGE,
                 getContext().getContentResolver());
 
-
-        try {
+        if (movies != null && movies.size() == MOVIES_PER_PAGE) {
+            for (Movie movie : movies) {
+                cardsAdapter.getMovieList().add(movie);
+                cardsAdapter.notifyItemRangeInserted(cardsAdapter.getMovieList().size() - 1, 1);
+            }
+        } else {
             TMDBRetrofit
                     .getFilmServiceInstance()
                     .getTopRated(page, "en")
@@ -92,7 +96,7 @@ public class Top250Fragment extends Fragment {
                         public Observable<Movie> call(MovieResults movieResults) {
                             DbUtils.addTopRatedMovies(movieResults.getResults(),
                                     getContext().getContentResolver(),
-                                    (page*MOVIES_PER_PAGE-MOVIES_PER_PAGE));
+                                    (page * MOVIES_PER_PAGE - MOVIES_PER_PAGE));
                             return Observable.from(movieResults.getResults());
                         }
                     })
@@ -117,9 +121,6 @@ public class Top250Fragment extends Fragment {
                             Log.d(TAG, "onNext: " + movie.getTitle());
                         }
                     });
-        }
-        catch (NetworkOnMainThreadException e ){
-            Log.d(TAG, "Caught: " + e);
         }
     }
 

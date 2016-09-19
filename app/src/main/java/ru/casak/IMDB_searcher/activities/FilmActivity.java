@@ -134,7 +134,7 @@ public class FilmActivity extends AppCompatActivity {
 
                         @Override
                         public void onNext(Movie movie) {
-                            DbUtils.addMovie(movie, getContentResolver());
+                            DbUtils.addMovie(movie.getId(), getContentResolver());
                             setViews(movie);
                             Log.d(TAG, "onNext(): " + movie.getTitle());
                         }

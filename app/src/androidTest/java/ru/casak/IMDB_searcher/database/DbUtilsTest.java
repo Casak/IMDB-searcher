@@ -18,6 +18,7 @@ import static org.junit.Assert.*;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import ru.casak.IMDB_searcher.models.Genre;
 import ru.casak.IMDB_searcher.models.Movie;
@@ -72,7 +73,7 @@ public class DbUtilsTest {
     }
 
     @Test
-    public void shouldAddMovieToMovieTable(){
+    public void shouldAddMovieToMovieTable() throws InterruptedException {
         Cursor cursor =  mContentResolver.query(ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, 550),
                 null,
                 MovieContract.MovieEntry.TABLE_NAME + "." +  MovieContract.MovieEntry._ID + " = ?",
@@ -83,7 +84,7 @@ public class DbUtilsTest {
 
         cursor.close();
 
-        DbUtils.addMovie(movie, mContentResolver);
+        DbUtils.addMovie(movie.getId(), mContentResolver);
 
         cursor =  mContentResolver.query(ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, 550),
                 null,

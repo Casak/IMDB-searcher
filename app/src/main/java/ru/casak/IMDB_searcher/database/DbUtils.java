@@ -5,6 +5,8 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,20 +16,50 @@ import java.util.Map;
 
 import ru.casak.IMDB_searcher.models.Genre;
 import ru.casak.IMDB_searcher.models.Movie;
+import ru.casak.IMDB_searcher.network.TMDBRetrofit;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class DbUtils {
+    private static final String TAG = DbUtils.class.getSimpleName();
 
-    public static void addMovie(Movie movie, ContentResolver resolver) {
-        final Uri uri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, movie.getId());
-        addMovieGenres(movie, resolver);
-        ContentValues values = createMovieContentValues(movie);
-        resolver.insert(uri, values);
+    public static void addMovie(Integer id, final ContentResolver resolver) {
+        final Uri uri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
+        if (DbUtils.getMovie(id, resolver) == null) {
+            TMDBRetrofit
+                    .getFilmServiceInstance()
+                    .getMovie(id, "en")
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new Subscriber<Movie>() {
+                        @Override
+                        public void onCompleted() {
+
+                            Log.d(TAG, "onCompleted() ");
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.e(TAG, "onError(): " + e.getMessage());
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onNext(Movie movie) {
+                            addMovieGenres(movie, resolver);
+                            ContentValues values = createMovieContentValues(movie);
+                            resolver.insert(uri, values);
+                            Log.d(TAG, "Inserted: " + movie.getTitle());
+                        }
+                    });
+        }
     }
 
-    public static void addTopRatedMovies(List<Movie> movies, ContentResolver resolver, Integer startPosition) {
+    public static void addTopRatedMovies(List<Movie> movies, final ContentResolver resolver, Integer startPosition) {
         List<ContentValues> topRatedValues = new LinkedList<>();
         for (Movie movie : movies) {
-            addMovie(movie, resolver);
+            DbUtils.addMovie(movie.getId(), resolver);
 
             ContentValues value = new ContentValues();
             value.put(MovieContract.TopRatedEntry.COLUMN_MOVIE_ID, movie.getId());
@@ -40,6 +72,7 @@ public class DbUtils {
 
     }
 
+    @Nullable
     public static List<Movie> getTopRatedMovies(Integer start, Integer end, ContentResolver resolver) {
         List<Movie> result = new LinkedList<>();
         String selection = MovieContract.TopRatedEntry.COLUMN_POSITION + " > ? AND " +
@@ -60,6 +93,7 @@ public class DbUtils {
         return result.size() == 0 ? null : result;
     }
 
+    @Nullable
     public static Movie getMovie(Integer id, ContentResolver resolver) {
         final Uri movieWithId = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
         Movie result = null;
@@ -77,7 +111,7 @@ public class DbUtils {
     }
 
     public static boolean addGenresIfNotExist(List<Genre> genres, ContentResolver resolver) {
-        if(genres == null)
+        if (genres == null)
             return false;
 
         int countInserted = 0;
