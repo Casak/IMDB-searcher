@@ -24,7 +24,14 @@ import rx.schedulers.Schedulers;
 public class DbUtils {
     private static final String TAG = DbUtils.class.getSimpleName();
 
-    public static void addMovie(Integer id, final ContentResolver resolver) {
+    public static void addMovie(Movie movie, final ContentResolver resolver) {
+        final Uri uri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, movie.getId());
+        addMovieGenres(movie, resolver);
+        ContentValues values = createMovieContentValues(movie);
+        resolver.insert(uri, values);
+    }
+
+    public static void addMovieIfNotExist(Integer id, final ContentResolver resolver) {
         final Uri uri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
         if (DbUtils.getMovie(id, resolver) == null) {
             TMDBRetrofit
@@ -59,7 +66,7 @@ public class DbUtils {
     public static void addTopRatedMovies(List<Movie> movies, final ContentResolver resolver, Integer startPosition) {
         List<ContentValues> topRatedValues = new LinkedList<>();
         for (Movie movie : movies) {
-            DbUtils.addMovie(movie.getId(), resolver);
+            DbUtils.addMovieIfNotExist(movie.getId(), resolver);
 
             ContentValues value = new ContentValues();
             value.put(MovieContract.TopRatedEntry.COLUMN_MOVIE_ID, movie.getId());

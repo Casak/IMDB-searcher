@@ -1,14 +1,10 @@
 package ru.casak.IMDB_searcher.activities;
 
-import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -27,10 +23,8 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import ru.casak.IMDB_searcher.database.DbUtils;
-import ru.casak.IMDB_searcher.database.MovieContract;
 import ru.casak.IMDB_searcher.models.*;
 import ru.casak.IMDB_searcher.R;
-import ru.casak.IMDB_searcher.network.DataUtils;
 import ru.casak.IMDB_searcher.network.TMDBRetrofit;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -134,7 +128,7 @@ public class FilmActivity extends AppCompatActivity {
 
                         @Override
                         public void onNext(Movie movie) {
-                            DbUtils.addMovie(movie.getId(), getContentResolver());
+                            DbUtils.addMovieIfNotExist(movie.getId(), getContentResolver());
                             setViews(movie);
                             Log.d(TAG, "onNext(): " + movie.getTitle());
                         }

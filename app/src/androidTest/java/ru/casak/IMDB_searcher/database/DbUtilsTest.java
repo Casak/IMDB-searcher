@@ -84,7 +84,7 @@ public class DbUtilsTest {
 
         cursor.close();
 
-        DbUtils.addMovie(movie.getId(), mContentResolver);
+        DbUtils.addMovie(movie, mContentResolver);
 
         cursor =  mContentResolver.query(ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, 550),
                 null,
