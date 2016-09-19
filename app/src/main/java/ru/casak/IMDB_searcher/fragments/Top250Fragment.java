@@ -13,8 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ru.casak.IMDB_searcher.adapters.CardsAdapter;
+import ru.casak.IMDB_searcher.database.DbUtils;
 import ru.casak.IMDB_searcher.services.FilmService;
 import ru.casak.IMDB_searcher.models.Movie;
 import ru.casak.IMDB_searcher.models.MovieResults;
@@ -30,13 +32,14 @@ public class Top250Fragment extends Fragment {
     private static final String TAG = Top250Fragment.class.getSimpleName();
     private static final int SPAN_COUNT = 2;
     private static final int PAGE_NUMBER = 1;
+    private static final int MOVIES_PER_PAGE = 20;
     private final CardsAdapter cardsAdapter = new CardsAdapter(new ArrayList<Movie>());
     private RecyclerView mRecyclerView;
     private boolean loading = true;
     private int pastVisibleItems, visibleItemCount, totalItemCount;
 
     @Override
-    public void onCreate (Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loadData(PAGE_NUMBER);
         Log.d(TAG, "onCreate finished");
@@ -49,7 +52,7 @@ public class Top250Fragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_page, container, false);
 
-        mRecyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerView);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(cardsAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -61,9 +64,9 @@ public class Top250Fragment extends Fragment {
                 pastVisibleItems = mLayoutManager.findFirstVisibleItemPosition();
 
                 if (loading) {
-                    if ( (visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                         loading = false;
-                        int page = (cardsAdapter.getItemCount() / 20) + 1;
+                        int page = (cardsAdapter.getItemCount() / MOVIES_PER_PAGE) + 1;
                         if (page <= 20) loadData(page);
                     }
                 }
@@ -73,17 +76,27 @@ public class Top250Fragment extends Fragment {
         return rootView;
     }
 
-    private void loadData(int page){
-        FilmService filmService = TMDBRetrofit.getFilmServiceInstance();
+    private void loadData(final int page) {
+        List<Movie> movies = DbUtils.getTopRatedMovies(page * MOVIES_PER_PAGE - MOVIES_PER_PAGE, page * MOVIES_PER_PAGE,
+                getContext().getContentResolver());
 
-        Observable<MovieResults> observable = filmService.getTopRated(page, "en");
-        try {
-            observable
+        if (movies != null && movies.size() == MOVIES_PER_PAGE) {
+            for (Movie movie : movies) {
+                cardsAdapter.getMovieList().add(movie);
+                cardsAdapter.notifyItemRangeInserted(cardsAdapter.getMovieList().size() - 1, 1);
+            }
+        } else {
+            TMDBRetrofit
+                    .getFilmServiceInstance()
+                    .getTopRated(page, "en")
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .flatMap(new Func1<MovieResults, Observable<Movie>>() {
                         @Override
                         public Observable<Movie> call(MovieResults movieResults) {
+                            DbUtils.addTopRatedMovies(movieResults.getResults(),
+                                    getContext().getContentResolver(),
+                                    (page * MOVIES_PER_PAGE - MOVIES_PER_PAGE));
                             return Observable.from(movieResults.getResults());
                         }
                     })
@@ -108,9 +121,6 @@ public class Top250Fragment extends Fragment {
                             Log.d(TAG, "onNext: " + movie.getTitle());
                         }
                     });
-        }
-        catch (NetworkOnMainThreadException e ){
-            Log.d(TAG, "Caught: " + e);
         }
     }
 

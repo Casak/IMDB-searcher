@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.NetworkOnMainThreadException;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewCompat;
@@ -23,8 +22,8 @@ import android.support.v7.graphics.Palette;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import ru.casak.IMDB_searcher.services.FilmService;
-import ru.casak.IMDB_searcher.models.Movie;
+import ru.casak.IMDB_searcher.database.DbUtils;
+import ru.casak.IMDB_searcher.models.*;
 import ru.casak.IMDB_searcher.R;
 import ru.casak.IMDB_searcher.network.TMDBRetrofit;
 import rx.Subscriber;
@@ -32,7 +31,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class FilmActivity extends AppCompatActivity {
-    private static final String TAG = "FilmActivity";
+    private static final String TAG = FilmActivity.class.getSimpleName();
     private static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/";
     private static final String IMAGE_SIZE = "w780";
     private static final String EXTRA_IMAGE = "ru.casak.IMDB_searcher.extraImage";
@@ -89,7 +88,8 @@ public class FilmActivity extends AppCompatActivity {
                 .load(BASE_IMAGE_URL + IMAGE_SIZE + posterPath)
                 .placeholder(R.drawable.progress_spinner)
                 .into(imageView, new Callback() {
-                    @Override public void onSuccess() {
+                    @Override
+                    public void onSuccess() {
                         Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
                         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
                             public void onGenerated(Palette palette) {
@@ -98,21 +98,54 @@ public class FilmActivity extends AppCompatActivity {
                         });
                     }
 
-                    @Override public void onError() {
-
+                    @Override
+                    public void onError() {
+                        Log.e(TAG, "Picasso onError(): " + posterPath);
                     }
                 });
 
-        loadData();
+        Movie movie = DbUtils.getMovie(id, getContentResolver());
+        if (movie != null) {
+            setViews(movie);
+        } else {
+            TMDBRetrofit
+                    .getFilmServiceInstance()
+                    .getMovie(id, "en")
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new Subscriber<Movie>() {
+                        @Override
+                        public void onCompleted() {
+
+                            Log.d(TAG, "onCompleted() ");
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.e(TAG, "onError(): " + e.getMessage());
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onNext(Movie movie) {
+                            DbUtils.addMovieIfNotExist(movie.getId(), getContentResolver());
+                            setViews(movie);
+                            Log.d(TAG, "onNext(): " + movie.getTitle());
+                        }
+                    });
+        }
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home: Log.d(TAG, "onOptionsItemSelected(): android.R.id.home");
+            case android.R.id.home:
+                Log.d(TAG, "onOptionsItemSelected(): android.R.id.home");
                 finish();
                 return true;
-            default: return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -133,45 +166,21 @@ public class FilmActivity extends AppCompatActivity {
         fab.setBackgroundTintList(ColorStateList.valueOf(vibrantColor));
     }
 
-
-    private void loadData(){
-        FilmService filmService = TMDBRetrofit.getFilmServiceInstance();
+    public void setViews(Movie movie) {
         final Resources resources = getApplicationContext().getResources();
-        try {
-            filmService
-                    .getMovie(id, "en")
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(new Subscriber<Movie>() {
-                        @Override
-                        public void onCompleted() {
+        if (movie != null) {
+            String titleText = movie.getTitle();
+            String overviewText = movie.getOverview();
+            Integer runTime = movie.getRuntime();
+            String release = movie.getReleaseDate().toString();
+            Double vote = movie.getVoteAverage();
 
-                            Log.d(TAG, "onCompleted() ");
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Log.e(TAG, "onError(): " + e.getMessage());
-                            e.printStackTrace();
-                        }
-
-                        @Override
-                        public void onNext(Movie movie) {
-                            collapsingToolbarLayout.setTitle(movie.getTitle());
-                            title.setText(resources.getString(R.string.film_title) + movie.getTitle());
-                            overview.setText(resources.getString(R.string.film_overview) + movie.getOverview());
-                            runtime.setText(resources.getString(R.string.film_runtime) + movie.getRuntime().toString());
-                            releaseDate.setText(resources.getString(R.string.film_release_date) + movie.getReleaseDate().toString());
-                            voteAverage.setText(resources.getString(R.string.film_vote_average) + movie.getVoteAverage().toString());
-
-                            Log.d(TAG, "Picasso`s URL: " + BASE_IMAGE_URL + IMAGE_SIZE + movie.getPoster_path());
-                            Log.d(TAG, "onNext: " + movie.getTitle());
-                        }
-                    });
-        }
-        catch (NetworkOnMainThreadException e ){
-            Log.d(TAG, "Caught:");
-            e.printStackTrace();
+            collapsingToolbarLayout.setTitle(titleText);
+            title.setText(resources.getString(R.string.film_title) + titleText);
+            overview.setText(resources.getString(R.string.film_overview) + overviewText);
+            runtime.setText(resources.getString(R.string.film_runtime) + runTime.toString());
+            releaseDate.setText(resources.getString(R.string.film_release_date) + release);
+            voteAverage.setText(resources.getString(R.string.film_vote_average) + vote);
         }
     }
 }
