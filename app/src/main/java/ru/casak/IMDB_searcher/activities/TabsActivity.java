@@ -1,6 +1,9 @@
 package ru.casak.IMDB_searcher.activities;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.animation.ArgbEvaluator;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -17,9 +20,11 @@ import java.lang.ref.WeakReference;
 
 import ru.casak.IMDB_searcher.R;
 import ru.casak.IMDB_searcher.adapters.TabWithFragmentPagerAdapter;
+import ru.casak.IMDB_searcher.providers.TMDBContentProvider;
 
 public class TabsActivity extends AppCompatActivity {
     private static final String TAG = TabsActivity.class.getSimpleName();
+    private static final Integer SYNC_FREQUENCY = 60*60*24; //24 hours
 
     private static WeakReference<Context> mContextReference;
 
@@ -28,6 +33,8 @@ public class TabsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         mContextReference = new WeakReference<>(getApplicationContext());
+
+        createSyncAccount(mContextReference.get());
 
         Resources resources = getResources();
         TypedArray[] colors = new TypedArray[] {
@@ -54,13 +61,24 @@ public class TabsActivity extends AppCompatActivity {
         return mContextReference.get();
     }
 
+    private void createSyncAccount(Context context) {
+        Account result = new Account(getString(R.string.account_name), getString(R.string.account_type));
+        AccountManager mAccountManager = (AccountManager) context.getSystemService(ACCOUNT_SERVICE)
+        if(mAccountManager.addAccountExplicitly(result, null, null)) {
+            String authority = TMDBContentProvider.AUTHORITY;
+            ContentResolver.setIsSyncable(result, authority, 1);
+            ContentResolver.setSyncAutomatically(result, authority, true);
+            ContentResolver.addPeriodicSync(result, authority, new Bundle(), SYNC_FREQUENCY);
+        }
+    }
+
     class ColorChangeListener implements ViewPager.OnPageChangeListener {
         private TypedArray[] colors;
         private ArgbEvaluator colorEvaluator;
         private Window window;
         private TabLayout tabLayout;
 
-        public ColorChangeListener(TypedArray[] colors, Window window, TabLayout tabLayout){
+        ColorChangeListener(TypedArray[] colors, Window window, TabLayout tabLayout){
             this.colors = colors;
             this.window = window;
             this.tabLayout = tabLayout;

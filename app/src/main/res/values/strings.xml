@@ -16,6 +16,10 @@
     <string name="film_vote_average">Vote Average: </string>
 
     <!--API KEYS-->
-    <string name="api_key">64405288c707e2b26ce8e0b4aeacad56</string>
+    <string name="api_key" translatable="false">64405288c707e2b26ce8e0b4aeacad56</string>
+
+    <!--Sync account-->
+    <string name="account_name" translatable="false">sync_account</string>
+    <string name="account_type" translatable="false">casak.ru</string>
 
 </resources>

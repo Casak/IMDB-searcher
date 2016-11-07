@@ -16,7 +16,7 @@ import ru.casak.IMDB_searcher.database.MovieDbHelper;
 public class TMDBContentProvider extends ContentProvider {
     private static final String TAG = TMDBContentProvider.class.getSimpleName();
 
-    private static final String AUTHORITY = MovieContract.CONTENT_AUTHORITY;
+    public static final String AUTHORITY = MovieContract.CONTENT_AUTHORITY;
 
     static final int MOVIE = 1;
     static final int MOVIES = 11;
