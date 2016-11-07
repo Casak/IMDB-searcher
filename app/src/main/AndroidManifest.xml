@@ -2,6 +2,7 @@
     package="ru.casak.IMDB_searcher">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.net.conn.CONNECTIVITY_CHANGE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -26,10 +27,20 @@
             android:theme="@style/MovieDetailTheme">
         </activity>
 
+        <service android:name=".services.AuthenticatorService">
+            <intent-filter>
+                <action android:name="android.account.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data
+                android:name="android.account.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+
+        </service>
+
         <provider
             android:authorities="ru.casak.IMDB_searcher"
-            android:name=".providers.TMDBContentProvider"/>
+            android:name=".providers.TMDBContentProvider"
+            android:exported="false"
+            android:syncable="true"/>
     </application>
-
-
 </manifest>
