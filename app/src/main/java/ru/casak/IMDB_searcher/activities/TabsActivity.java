@@ -13,19 +13,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Window;
 
+import java.lang.ref.WeakReference;
+
 import ru.casak.IMDB_searcher.R;
 import ru.casak.IMDB_searcher.adapters.TabWithFragmentPagerAdapter;
 
 public class TabsActivity extends AppCompatActivity {
     private static final String TAG = TabsActivity.class.getSimpleName();
 
-    private static Context context;
+    private static WeakReference<Context> mContextReference;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        context = getApplicationContext();
+        mContextReference = new WeakReference<>(getApplicationContext());
 
         Resources resources = getResources();
         TypedArray[] colors = new TypedArray[] {
@@ -49,7 +51,7 @@ public class TabsActivity extends AppCompatActivity {
     }
 
     public static Context getContext() {
-        return TabsActivity.context;
+        return mContextReference.get();
     }
 
     class ColorChangeListener implements ViewPager.OnPageChangeListener {
