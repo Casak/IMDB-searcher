@@ -63,7 +63,7 @@ public class TabsActivity extends AppCompatActivity {
 
     private void createSyncAccount(Context context) {
         Account result = new Account(getString(R.string.account_name), getString(R.string.account_type));
-        AccountManager mAccountManager = (AccountManager) context.getSystemService(ACCOUNT_SERVICE)
+        AccountManager mAccountManager = (AccountManager) context.getSystemService(ACCOUNT_SERVICE);
         if(mAccountManager.addAccountExplicitly(result, null, null)) {
             String authority = TMDBContentProvider.AUTHORITY;
             ContentResolver.setIsSyncable(result, authority, 1);
