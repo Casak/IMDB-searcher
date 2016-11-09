@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 
 public class AuthenticatorService extends Service {
     private Authenticator mAuthenticator;
+    public static final String ACCOUNT_NAME = "Account";
 
     @Override
     public void onCreate() {
@@ -24,6 +25,11 @@ public class AuthenticatorService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return mAuthenticator.getIBinder();
+    }
+
+    public static Account getAccount(String accountType) {
+        final String accountName = ACCOUNT_NAME;
+        return new Account(accountName, accountType);
     }
 
 

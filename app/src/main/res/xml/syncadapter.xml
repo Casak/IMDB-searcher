@@ -1,0 +1,7 @@
+<sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
+    android:contentAuthority="ru.casak.IMDB_searcher"
+    android:accountType="ru.casak.IMDB_searcher.account"
+    android:userVisible="false"
+    android:supportsUploading="false"
+    android:allowParallelSyncs="false"
+    android:isAlwaysSyncable="true" />

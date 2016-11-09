@@ -1,9 +1,6 @@
 package ru.casak.IMDB_searcher.adapters;
 
-import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
-import android.accounts.AccountAuthenticatorResponse;
-import android.accounts.NetworkErrorException;
 import android.annotation.TargetApi;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;

@@ -1,9 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ru.casak.IMDB_searcher">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_SYNC_STATS"/>
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
 
     <application
@@ -13,36 +15,46 @@
         android:supportsRtl="true">
 
 
-
         <activity
             android:name=".activities.TabsActivity"
             android:label="@string/app_name"
             android:theme="@style/TabsTheme">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".activities.FilmActivity"
             android:label="@string/app_name"
-            android:theme="@style/MovieDetailTheme">
-        </activity>
+            android:theme="@style/MovieDetailTheme" />
 
-        <service android:name=".services.AuthenticatorService">
+        <service
+            android:name=".services.SyncService"
+            android:exported="true">
             <intent-filter>
-                <action android:name="android.account.AccountAuthenticator" />
+                <action android:name="android.content.SyncAdapter" />
             </intent-filter>
             <meta-data
-                android:name="android.account.AccountAuthenticator"
-                android:resource="@xml/authenticator" />
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter" />
+        </service>
 
+        <service
+            android:name=".services.AuthenticatorService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
         </service>
 
         <provider
-            android:authorities="ru.casak.IMDB_searcher"
             android:name=".providers.TMDBContentProvider"
-            android:exported="false"/>
+            android:authorities="ru.casak.IMDB_searcher"
+            android:exported="false" />
     </application>
 </manifest>

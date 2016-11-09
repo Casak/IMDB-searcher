@@ -21,10 +21,12 @@ import java.lang.ref.WeakReference;
 import ru.casak.IMDB_searcher.R;
 import ru.casak.IMDB_searcher.adapters.TabWithFragmentPagerAdapter;
 import ru.casak.IMDB_searcher.providers.TMDBContentProvider;
+import ru.casak.IMDB_searcher.services.AuthenticatorService;
 
 public class TabsActivity extends AppCompatActivity {
     private static final String TAG = TabsActivity.class.getSimpleName();
     private static final Integer SYNC_FREQUENCY = 60*60*24; //24 hours
+    public static final String ACCOUNT_TYPE = "ru.casak.IMDB_searcher.account";
 
     private static WeakReference<Context> mContextReference;
 
@@ -34,7 +36,7 @@ public class TabsActivity extends AppCompatActivity {
 
         mContextReference = new WeakReference<>(getApplicationContext());
 
-        createSyncAccount(mContextReference.get());
+        enableSync(mContextReference.get());
 
         Resources resources = getResources();
         TypedArray[] colors = new TypedArray[] {
@@ -61,14 +63,14 @@ public class TabsActivity extends AppCompatActivity {
         return mContextReference.get();
     }
 
-    private void createSyncAccount(Context context) {
-        Account result = new Account(getString(R.string.account_name), getString(R.string.account_type));
-        AccountManager mAccountManager = (AccountManager) context.getSystemService(ACCOUNT_SERVICE);
-        if(mAccountManager.addAccountExplicitly(result, null, null)) {
+    private void enableSync(Context context) {
+        Account account = AuthenticatorService.getAccount(ACCOUNT_TYPE);
+        AccountManager mAccountManager = (AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
+        if(mAccountManager.addAccountExplicitly(account, null, null)) {
             String authority = TMDBContentProvider.AUTHORITY;
-            ContentResolver.setIsSyncable(result, authority, 1);
-            ContentResolver.setSyncAutomatically(result, authority, true);
-            ContentResolver.addPeriodicSync(result, authority, new Bundle(), SYNC_FREQUENCY);
+            ContentResolver.setIsSyncable(account, authority, 1);
+            ContentResolver.setSyncAutomatically(account, authority, true);
+            ContentResolver.addPeriodicSync(account, authority, new Bundle(), SYNC_FREQUENCY);
         }
     }
 
