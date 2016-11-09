@@ -8,18 +8,14 @@
 
     <!--Film details (FilmActivity)-->
 
-    <string name="film_title">Title: </string>
-    <string name="film_overview">Overview: </string>
-    <string name="film_director">Director: </string>
-    <string name="film_runtime">Runtime: </string>
-    <string name="film_release_date">Release Date: </string>
-    <string name="film_vote_average">Vote Average: </string>
+    <string name="film_title">Title: %1$s</string>
+    <string name="film_overview">Overview: %1$s</string>
+    <string name="film_director">Director: %1$s</string>
+    <string name="film_runtime">Runtime: %1$d</string>
+    <string name="film_release_date">Release Date: %1$s</string>
+    <string name="film_vote_average">Vote Average: %1$f</string>
 
     <!--API KEYS-->
     <string name="api_key" translatable="false">64405288c707e2b26ce8e0b4aeacad56</string>
-
-    <!--Sync account-->
-    <string name="account_name" translatable="false">sync_account</string>
-    <string name="account_type" translatable="false">casak.ru</string>
 
 </resources>

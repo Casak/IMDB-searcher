@@ -172,15 +172,15 @@ public class FilmActivity extends AppCompatActivity {
             String titleText = movie.getTitle();
             String overviewText = movie.getOverview();
             Integer runTime = movie.getRuntime();
-            String release = movie.getReleaseDate().toString();
+            String release = movie.getReleaseDate();
             Double vote = movie.getVoteAverage();
 
             collapsingToolbarLayout.setTitle(titleText);
-            title.setText(resources.getString(R.string.film_title) + titleText);
-            overview.setText(resources.getString(R.string.film_overview) + overviewText);
-            runtime.setText(resources.getString(R.string.film_runtime) + runTime.toString());
-            releaseDate.setText(resources.getString(R.string.film_release_date) + release);
-            voteAverage.setText(resources.getString(R.string.film_vote_average) + vote);
+            title.setText(String.format(resources.getString(R.string.film_title), titleText));
+            overview.setText(String.format(resources.getString(R.string.film_overview), overviewText));
+            runtime.setText(String.format(resources.getString(R.string.film_runtime), runTime));
+            releaseDate.setText(String.format(resources.getString(R.string.film_release_date), release));
+            voteAverage.setText(String.format(resources.getString(R.string.film_vote_average), vote));
         }
     }
 }
