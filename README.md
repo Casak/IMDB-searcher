@@ -1,5 +1,10 @@
 # IMDB-searcher
 
+## Description
+
+App for searching films using TMDB API.
+
+
 ## Описание
 
 Приложение для поиска фильмов в базе данных imdb.
