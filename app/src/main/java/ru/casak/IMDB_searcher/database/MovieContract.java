@@ -30,8 +30,10 @@ public class MovieContract {
     public static final String PATH_LANGUAGE = "language";
 
     public static final String PATH_TOP_RATED = "top_rated";
+    public static final String PATH_TOP_RATED_ENTRY = "top_rated_entry";
 
     public static final String PATH_UPCOMING = "upcoming";
+    public static final String PATH_UPCOMING_ENTRY = "upcoming_entry";
 
     public static final String PATH_FAVORITES = "favorites";
     public static final String PATH_FAVORITE = "favorite";
@@ -159,6 +161,9 @@ public class MovieContract {
         public static final String CONTENT_DIR_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_TOP_RATED;
 
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_TOP_RATED_ENTRY;
+
         public static final String TABLE_NAME = "top_rated";
 
         public static final String COLUMN_MOVIE_ID = "movie_id";
@@ -171,6 +176,9 @@ public class MovieContract {
 
         public static final String CONTENT_DIR_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_UPCOMING;
+
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_UPCOMING_ENTRY;
 
         public static final String TABLE_NAME = "upcoming";
 

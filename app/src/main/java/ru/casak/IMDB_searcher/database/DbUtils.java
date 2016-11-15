@@ -80,20 +80,56 @@ public class DbUtils {
         return result;
     }
 
+    @Nullable
+    public static Movie getUpcomingMovie(Integer id, ContentResolver resolver) {
+        final Uri movieWithId = ContentUris.withAppendedId(MovieContract.UpcomingEntry.CONTENT_URI, id);
+        Movie result = null;
+        Cursor cursor = resolver.query(movieWithId,
+                null,
+                null,
+                null,
+                null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            result = createMovieFromCursor(cursor);
+            cursor.close();
+        }
+        return result;
+    }
+
+    @Nullable
+    public static Movie getTopRatedMovie(Integer id, ContentResolver resolver) {
+        final Uri movieWithId = ContentUris.withAppendedId(MovieContract.TopRatedEntry.CONTENT_URI, id);
+        Movie result = null;
+        Cursor cursor = resolver.query(movieWithId,
+                null,
+                null,
+                null,
+                null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            result = createMovieFromCursor(cursor);
+            cursor.close();
+        }
+        return result;
+    }
+
     public static void addTopRatedMovies(List<Movie> movies, final ContentResolver resolver, Integer startPosition) {
         List<ContentValues> topRatedValues = new LinkedList<>();
         for (Movie movie : movies) {
-            DbUtils.addMovieIfNotExist(movie.getId(), resolver);
+            if (getTopRatedMovie(movie.getId(), resolver) != null) {
+                DbUtils.addMovieIfNotExist(movie.getId(), resolver);
 
-            ContentValues value = new ContentValues();
-            value.put(MovieContract.TopRatedEntry.COLUMN_MOVIE_ID, movie.getId());
-            value.put(MovieContract.TopRatedEntry.COLUMN_POSITION, startPosition++);
-            topRatedValues.add(value);
+                ContentValues value = new ContentValues();
+                value.put(MovieContract.TopRatedEntry.COLUMN_MOVIE_ID, movie.getId());
+                value.put(MovieContract.TopRatedEntry.COLUMN_POSITION, startPosition++);
+                topRatedValues.add(value);
+            }
         }
 
-        resolver.bulkInsert(MovieContract.TopRatedEntry.CONTENT_URI,
-                topRatedValues.toArray(new ContentValues[movies.size()]));
-
+        if (topRatedValues.size() > 0)
+            resolver.bulkInsert(MovieContract.TopRatedEntry.CONTENT_URI,
+                    topRatedValues.toArray(new ContentValues[movies.size()]));
     }
 
     @Nullable
@@ -119,26 +155,27 @@ public class DbUtils {
 
     public static void addUpcomingMovies(List<Movie> movies, final ContentResolver resolver) {
         List<ContentValues> upcomingValues = new LinkedList<>();
-        for (Movie movie : movies) {
-            DbUtils.addMovieIfNotExist(movie.getId(), resolver);
 
-            ContentValues value = new ContentValues();
-            value.put(MovieContract.UpcomingEntry.COLUMN_MOVIE_ID, movie.getId());
-            value.put(MovieContract.UpcomingEntry.COLUMN_RELEASE_DATE, movie.getReleaseDate());
-            upcomingValues.add(value);
+        for (Movie movie : movies) {
+            if (getUpcomingMovie(movie.getId(), resolver) != null) {
+                DbUtils.addMovieIfNotExist(movie.getId(), resolver);
+
+                ContentValues value = new ContentValues();
+                value.put(MovieContract.UpcomingEntry.COLUMN_MOVIE_ID, movie.getId());
+                value.put(MovieContract.UpcomingEntry.COLUMN_RELEASE_DATE, movie.getReleaseDate());
+                upcomingValues.add(value);
+            }
         }
 
-        int i = resolver.bulkInsert(MovieContract.UpcomingEntry.CONTENT_URI,
+        if (upcomingValues.size() > 0)
+                resolver.bulkInsert(MovieContract.UpcomingEntry.CONTENT_URI,
                 upcomingValues.toArray(new ContentValues[movies.size()]));
-
-        if(i<0) return;
-
     }
 
     @Nullable
     public static List<Movie> getUpcomingMovies(Integer start, Integer end, ContentResolver resolver) {
         List<Movie> result = new LinkedList<>();
-                String sortOrder = MovieContract.UpcomingEntry.COLUMN_RELEASE_DATE + " DESC ";
+        String sortOrder = MovieContract.UpcomingEntry.COLUMN_RELEASE_DATE + " DESC ";
         Cursor cursor = resolver.query(MovieContract.UpcomingEntry.CONTENT_URI,
                 null,
                 null,

@@ -30,7 +30,9 @@ public class TMDBContentProvider extends ContentProvider {
     static final int GENRES = 55;
     static final int MOVIE_GENRES = 66;
     static final int TOP_RATED = 250;
+    static final int TOP_RATED_ENTRY = 255;
     static final int UPCOMING = 500;
+    static final int UPCOMING_ENTRY = 505;
     static final int FAVORITE = 100;
     static final int FAVORITES = 1000;
 
@@ -48,31 +50,6 @@ public class TMDBContentProvider extends ContentProvider {
         sGenresQueryBuilder = new SQLiteQueryBuilder();
 
         sMovieQueryBuilder.setTables(MovieContract.MovieEntry.TABLE_NAME
-         /*       +
-                " INNER JOIN " +
-                MovieContract.GengeEntry.TABLE_NAME + " ON " +
-                MovieContract.MovieEntry.TABLE_NAME + "." +
-                MovieContract.MovieEntry.COLUMN_GENRES + " = " +
-                MovieContract.GengeEntry.TABLE_NAME + "." +
-                MovieContract.GengeEntry._ID +
-                " INNER JOIN " +
-                MovieContract.CountryEntry.TABLE_NAME + " ON " +
-                MovieContract.MovieEntry.TABLE_NAME + "." +
-                MovieContract.MovieEntry.COLUMN_COUNTRIES + " = " +
-                MovieContract.CountryEntry.TABLE_NAME + "." +
-                MovieContract.CountryEntry._ID +
-                " INNER JOIN " +
-                MovieContract.CompanyEntry.TABLE_NAME + " ON " +
-                MovieContract.MovieEntry.TABLE_NAME + "." +
-                MovieContract.MovieEntry.COLUMN_COMPANIES + " = " +
-                MovieContract.CompanyEntry.TABLE_NAME + "." +
-                MovieContract.CompanyEntry._ID +
-                " INNER JOIN " +
-                MovieContract.SpokenLanguagesEntry.TABLE_NAME + " ON " +
-                MovieContract.MovieEntry.TABLE_NAME + "." +
-                MovieContract.MovieEntry.COLUMN_SPOKEN_LANGUAGES + " = " +
-                MovieContract.SpokenLanguagesEntry.TABLE_NAME + "." +
-                MovieContract.SpokenLanguagesEntry._ID*/
         );
 
         sTopRatedQueryBuilder.setTables(
@@ -149,7 +126,29 @@ public class TMDBContentProvider extends ContentProvider {
                         null,
                         null,
                         sortOrder);
+            case TOP_RATED_ENTRY:
+                selection = MovieContract.TopRatedEntry.TABLE_NAME + "." +
+                        MovieContract.TopRatedEntry._ID + " = ?";
+                selectionArgs = new String[]{uri.getLastPathSegment()};
+                return sTopRatedQueryBuilder.query(db,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
             case UPCOMING:
+                return sUpcomingQueryBuilder.query(db,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+            case UPCOMING_ENTRY:
+                selection = MovieContract.UpcomingEntry.TABLE_NAME + "." +
+                        MovieContract.UpcomingEntry._ID + " = ?";
+                selectionArgs = new String[]{uri.getLastPathSegment()};
                 return sUpcomingQueryBuilder.query(db,
                         projection,
                         selection,
@@ -198,8 +197,12 @@ public class TMDBContentProvider extends ContentProvider {
                 return MovieContract.MovieEntry.CONTENT_ITEM_TYPE;
             case TOP_RATED:
                 return MovieContract.TopRatedEntry.CONTENT_DIR_TYPE;
+            case TOP_RATED_ENTRY:
+                return MovieContract.TopRatedEntry.CONTENT_ITEM_TYPE;
             case UPCOMING:
                 return MovieContract.UpcomingEntry.CONTENT_DIR_TYPE;
+            case UPCOMING_ENTRY:
+                return MovieContract.UpcomingEntry.CONTENT_ITEM_TYPE;
             case FAVORITES:
                 return MovieContract.FavoritesEntry.CONTENT_DIR_TYPE;
             case FAVORITE:
@@ -395,8 +398,10 @@ public class TMDBContentProvider extends ContentProvider {
         result.addURI(AUTHORITY, MovieContract.PATH_MOVIE_GENRES, MOVIE_GENRES);
 
         result.addURI(AUTHORITY, MovieContract.PATH_TOP_RATED, TOP_RATED);
+        result.addURI(AUTHORITY, MovieContract.PATH_TOP_RATED + "/*", TOP_RATED_ENTRY);
 
         result.addURI(AUTHORITY, MovieContract.PATH_UPCOMING, UPCOMING);
+        result.addURI(AUTHORITY, MovieContract.PATH_UPCOMING + "/*", UPCOMING_ENTRY);
 
         result.addURI(AUTHORITY, MovieContract.PATH_FAVORITES, FAVORITES);
         result.addURI(AUTHORITY, MovieContract.PATH_FAVORITE, FAVORITE);
