@@ -127,9 +127,24 @@ public class DbUtils {
             }
         }
 
-        if (topRatedValues.size() > 0)
-            resolver.bulkInsert(MovieContract.TopRatedEntry.CONTENT_URI,
-                    topRatedValues.toArray(new ContentValues[movies.size()]));
+        int valuesNumber = topRatedValues.size();
+
+        switch (valuesNumber){
+            case 0:
+                break;
+            case 1:
+                ContentValues value = topRatedValues.get(0);
+                int movieId = Integer.parseInt(value
+                                .get(MovieContract.TopRatedEntry.COLUMN_MOVIE_ID)
+                                .toString());
+                final Uri uri = ContentUris.withAppendedId(MovieContract.TopRatedEntry.CONTENT_URI,
+                        movieId);
+                resolver.insert(uri, value);
+                break;
+            default:
+                resolver.bulkInsert(MovieContract.TopRatedEntry.CONTENT_URI,
+                        topRatedValues.toArray(new ContentValues[movies.size()]));
+        }
     }
 
     @Nullable
@@ -167,9 +182,24 @@ public class DbUtils {
             }
         }
 
-        if (upcomingValues.size() > 0)
+        int valuesNumber = upcomingValues.size();
+
+        switch (valuesNumber){
+            case 0:
+                break;
+            case 1:
+                ContentValues value = upcomingValues.get(0);
+                int movieId = Integer.parseInt(value
+                        .get(MovieContract.UpcomingEntry.COLUMN_MOVIE_ID)
+                        .toString());
+                final Uri uri = ContentUris.withAppendedId(MovieContract.UpcomingEntry.CONTENT_URI,
+                        movieId);
+                resolver.insert(uri, value);
+                break;
+            default:
                 resolver.bulkInsert(MovieContract.UpcomingEntry.CONTENT_URI,
-                upcomingValues.toArray(new ContentValues[movies.size()]));
+                        upcomingValues.toArray(new ContentValues[movies.size()]));
+        }
     }
 
     @Nullable

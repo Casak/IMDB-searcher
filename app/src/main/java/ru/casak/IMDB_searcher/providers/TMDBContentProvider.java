@@ -242,6 +242,20 @@ public class TMDBContentProvider extends ContentProvider {
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
+            case TOP_RATED_ENTRY:
+                _id = db.insert(MovieContract.TopRatedEntry.TABLE_NAME, null, contentValues);
+                if (_id > 0)
+                    result = ContentUris.withAppendedId(uri, _id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            case UPCOMING_ENTRY:
+                _id = db.insert(MovieContract.UpcomingEntry.TABLE_NAME, null, contentValues);
+                if (_id > 0)
+                    result = ContentUris.withAppendedId(uri, _id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
             case FAVORITE:
                 _id = db.insert(MovieContract.FavoritesEntry.TABLE_NAME, null, contentValues);
                 if (_id > 0)
