@@ -1,9 +1,6 @@
 package ru.casak.IMDB_searcher.activities;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.animation.ArgbEvaluator;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -13,20 +10,16 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Window;
 
 import java.lang.ref.WeakReference;
 
 import ru.casak.IMDB_searcher.R;
 import ru.casak.IMDB_searcher.adapters.TabWithFragmentPagerAdapter;
-import ru.casak.IMDB_searcher.providers.TMDBContentProvider;
-import ru.casak.IMDB_searcher.services.AuthenticatorService;
+import ru.casak.IMDB_searcher.services.SyncService;
 
 public class TabsActivity extends AppCompatActivity {
     private static final String TAG = TabsActivity.class.getSimpleName();
-    private static final Integer SYNC_FREQUENCY = 60*60*24; //24 hours
-    public static final String ACCOUNT_TYPE = "ru.casak.IMDB_searcher.account";
 
     private static WeakReference<Context> mContextReference;
 
@@ -36,7 +29,7 @@ public class TabsActivity extends AppCompatActivity {
 
         mContextReference = new WeakReference<>(getApplicationContext());
 
-        enableSync(mContextReference.get());
+        SyncService.enableSync(mContextReference.get());
 
         Resources resources = getResources();
         TypedArray[] colors = new TypedArray[] {
@@ -61,17 +54,6 @@ public class TabsActivity extends AppCompatActivity {
 
     public static Context getContext() {
         return mContextReference.get();
-    }
-
-    private void enableSync(Context context) {
-        Account account = AuthenticatorService.getAccount(ACCOUNT_TYPE);
-        AccountManager mAccountManager = (AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
-        if(mAccountManager.addAccountExplicitly(account, null, null)) {
-            String authority = TMDBContentProvider.AUTHORITY;
-            ContentResolver.setIsSyncable(account, authority, 1);
-            ContentResolver.setSyncAutomatically(account, authority, true);
-            ContentResolver.addPeriodicSync(account, authority, new Bundle(), SYNC_FREQUENCY);
-        }
     }
 
     class ColorChangeListener implements ViewPager.OnPageChangeListener {
@@ -104,18 +86,15 @@ public class TabsActivity extends AppCompatActivity {
             }
 
             changeInterfaceHeadColorTheme(evalColor[0], evalColor[1], evalColor[2], evalColor[3]);
-            Log.d(TAG, "onPageScrolled() ----done");
         }
 
         @Override
         public void onPageSelected(int position) {
             changeColorTheme(colors[position]);
-            Log.d(TAG, "onPageSelected() ----done");
         }
 
         @Override
         public void onPageScrollStateChanged(int state) {
-            Log.d(TAG, "onPageScrollStateChanged() ----done");
         }
 
         private void changeColorTheme(TypedArray colorSet) {
