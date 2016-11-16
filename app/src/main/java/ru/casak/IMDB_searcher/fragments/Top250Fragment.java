@@ -2,7 +2,6 @@ package ru.casak.IMDB_searcher.fragments;
 
 
 import android.os.Bundle;
-import android.os.NetworkOnMainThreadException;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,12 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ru.casak.IMDB_searcher.adapters.CardsAdapter;
 import ru.casak.IMDB_searcher.database.DbUtils;
-import ru.casak.IMDB_searcher.services.FilmService;
 import ru.casak.IMDB_searcher.models.Movie;
 import ru.casak.IMDB_searcher.models.MovieResults;
 import ru.casak.IMDB_searcher.R;
@@ -33,7 +30,7 @@ public class Top250Fragment extends Fragment {
     private static final int SPAN_COUNT = 2;
     private static final int PAGE_NUMBER = 1;
     private static final int MOVIES_PER_PAGE = 20;
-    private final CardsAdapter cardsAdapter = new CardsAdapter(new ArrayList<Movie>());
+    private final CardsAdapter cardsAdapter = new CardsAdapter();
     private RecyclerView mRecyclerView;
     private boolean loading = true;
     private int pastVisibleItems, visibleItemCount, totalItemCount;
@@ -82,7 +79,7 @@ public class Top250Fragment extends Fragment {
 
         if (movies != null && movies.size() == MOVIES_PER_PAGE) {
             for (Movie movie : movies) {
-                cardsAdapter.getMovieList().add(movie);
+                cardsAdapter.addMovie(movie);
                 cardsAdapter.notifyItemRangeInserted(cardsAdapter.getMovieList().size() - 1, 1);
             }
         } else {
@@ -95,8 +92,7 @@ public class Top250Fragment extends Fragment {
                         @Override
                         public Observable<Movie> call(MovieResults movieResults) {
                             DbUtils.addTopRatedMovies(movieResults.getResults(),
-                                    getContext().getContentResolver(),
-                                    (page * MOVIES_PER_PAGE - MOVIES_PER_PAGE));
+                                    getContext().getContentResolver());
                             return Observable.from(movieResults.getResults());
                         }
                     })
@@ -116,7 +112,7 @@ public class Top250Fragment extends Fragment {
 
                         @Override
                         public void onNext(Movie movie) {
-                            cardsAdapter.getMovieList().add(movie);
+                            cardsAdapter.addMovie(movie);
                             cardsAdapter.notifyItemRangeInserted(cardsAdapter.getMovieList().size() - 1, 1);
                             Log.d(TAG, "onNext: " + movie.getTitle());
                         }

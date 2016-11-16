@@ -9,10 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-
 import ru.casak.IMDB_searcher.adapters.CardsAdapter;
-import ru.casak.IMDB_searcher.models.Movie;
 import ru.casak.IMDB_searcher.R;
 
 
@@ -42,8 +39,7 @@ public class PageFragment extends Fragment {
         final RecyclerView mRecyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerView);
         final LinearLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        //mRecyclerView.setAdapter(new CardsAdapter(getContext().getResources().getString(R.string.ApiKey)));
-        mRecyclerView.setAdapter(new CardsAdapter(new ArrayList<Movie>()));
+        mRecyclerView.setAdapter(new CardsAdapter());
         return rootView;
     }
 }

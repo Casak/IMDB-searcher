@@ -23,13 +23,18 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
     private static final String TAG = "CardsAdapter";
     private static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/";
     private static final String IMAGE_SIZE = "w780";
-    private List<Movie> movieList = new ArrayList<Movie>();
+    private List<Movie> movieList = new ArrayList<>();
 
-    public CardsAdapter(List<Movie> movieList) {
-        this.movieList = movieList;
+    public CardsAdapter(){
+        movieList = new ArrayList<>();
     }
 
     public List<Movie> getMovieList(){
+        return movieList;
+    }
+
+    public List<Movie> addMovie(Movie movie){
+        movieList.add(movie);
         return movieList;
     }
 
@@ -40,9 +45,9 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position){
-        final Context context = holder.getImageView().getContext();
+        final Context context = holder.imageView.getContext();
 
-        holder.getImageView().setOnClickListener(new View.OnClickListener() {
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, FilmActivity.class);
@@ -54,13 +59,13 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
         });
 
         if ( movieList.size() != 0 ) {
-            holder.getTextView().setText(movieList.get(position).getTitle());
+            holder.textView.setText(movieList.get(position).getTitle());
             Picasso picasso = Picasso.with(context);
             picasso.setIndicatorsEnabled(true);
             picasso
                     .load(BASE_IMAGE_URL + IMAGE_SIZE + movieList.get(position).getPosterPath())
                     .placeholder(R.drawable.progress_spinner)
-                    .into(holder.getImageView());
+                    .into(holder.imageView);
             Log.d(TAG, "Element " + position + " set with: " + movieList.get(position).getTitle());
         }
         else
@@ -75,23 +80,15 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
     }
 
 
-
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    static class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView textView;
         private final ImageView imageView;
 
-        public ViewHolder(View view){
+        ViewHolder(View view){
             super(view);
 
             textView = (TextView)view.findViewById(R.id.title);
             imageView = (ImageView)view.findViewById(R.id.poster);
-        }
-
-        public TextView getTextView(){
-            return textView;
-        }
-        public ImageView getImageView(){
-            return imageView;
         }
     }
 }

@@ -32,7 +32,7 @@ public class ComingSoonFragment extends Fragment {
     private static final String TAG = "ComingSoonFragment";
     private static final int SPAN_COUNT = 2;
     private static final int MOVIES_PER_PAGE = 20;
-    private CardsAdapter cardsAdapter = new CardsAdapter(new ArrayList<Movie>());
+    private CardsAdapter cardsAdapter = new CardsAdapter();
     private RecyclerView mRecyclerView;
     private boolean loading = true;
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
@@ -64,7 +64,7 @@ public class ComingSoonFragment extends Fragment {
                 if (loading) {
                     if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                         loading = false;
-                        int page = (cardsAdapter.getItemCount() / 20) + 1;
+                        int page = (cardsAdapter.getItemCount() / MOVIES_PER_PAGE) + 1;
                         if (page <= 20) loadData(page);
                     }
                 }
@@ -80,7 +80,7 @@ public class ComingSoonFragment extends Fragment {
 
         if (movies != null && movies.size() == MOVIES_PER_PAGE) {
             for (Movie movie : movies) {
-                cardsAdapter.getMovieList().add(movie);
+                cardsAdapter.addMovie(movie);
                 cardsAdapter.notifyItemRangeInserted(cardsAdapter.getMovieList().size() - 1, 1);
             }
         } else {
@@ -113,7 +113,7 @@ public class ComingSoonFragment extends Fragment {
 
                         @Override
                         public void onNext(Movie movie) {
-                            cardsAdapter.getMovieList().add(movie);
+                            cardsAdapter.addMovie(movie);
                             cardsAdapter.notifyItemRangeInserted(cardsAdapter.getMovieList().size() - 1, 1);
                             Log.d(TAG, "onNext: " + movie.getTitle());
                         }

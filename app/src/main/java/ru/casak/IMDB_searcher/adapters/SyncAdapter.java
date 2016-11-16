@@ -107,7 +107,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         @Override
         public Observable<?> call(List<Movie> movies) {
-            DbUtils.addTopRatedMovies(movies, mContentResolver, 0);
+            DbUtils.addTopRatedMovies(movies, mContentResolver);
             return Observable.from(movies);
         }
     }

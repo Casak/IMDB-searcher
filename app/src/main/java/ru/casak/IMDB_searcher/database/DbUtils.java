@@ -8,9 +8,9 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,8 +32,8 @@ public class DbUtils {
     }
 
     public static void addMovieIfNotExist(Integer id, final ContentResolver resolver) {
-        final Uri uri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
-        if (DbUtils.getMovie(id, resolver) == null) {
+        Movie movie = DbUtils.getMovie(id, resolver);
+        if (movie == null) {
             TMDBRetrofit
                     .getFilmServiceInstance()
                     .getMovie(id, "en")
@@ -42,21 +42,16 @@ public class DbUtils {
                     .subscribe(new Subscriber<Movie>() {
                         @Override
                         public void onCompleted() {
-
-                            Log.d(TAG, "onCompleted() ");
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            Log.e(TAG, "onError(): " + e.getMessage());
                             e.printStackTrace();
                         }
 
                         @Override
                         public void onNext(Movie movie) {
-                            addMovieGenres(movie, resolver);
-                            ContentValues values = createMovieContentValues(movie);
-                            resolver.insert(uri, values);
+                            addMovie(movie, resolver);
                             Log.d(TAG, "Inserted: " + movie.getTitle());
                         }
                     });
@@ -114,29 +109,29 @@ public class DbUtils {
         return result;
     }
 
-    public static void addTopRatedMovies(List<Movie> movies, final ContentResolver resolver, Integer startPosition) {
-        List<ContentValues> topRatedValues = new LinkedList<>();
+    public static void addTopRatedMovies(List<Movie> movies, final ContentResolver resolver) {
+        List<ContentValues> topRatedValues = new ArrayList<>();
         for (Movie movie : movies) {
-            if (getTopRatedMovie(movie.getId(), resolver) != null) {
+            if (getTopRatedMovie(movie.getId(), resolver) == null) {
                 DbUtils.addMovieIfNotExist(movie.getId(), resolver);
 
                 ContentValues value = new ContentValues();
                 value.put(MovieContract.TopRatedEntry.COLUMN_MOVIE_ID, movie.getId());
-                value.put(MovieContract.TopRatedEntry.COLUMN_POSITION, startPosition++);
+                value.put(MovieContract.TopRatedEntry.COLUMN_RATING, movie.getVoteAverage());
                 topRatedValues.add(value);
             }
         }
 
         int valuesNumber = topRatedValues.size();
 
-        switch (valuesNumber){
+        switch (valuesNumber) {
             case 0:
                 break;
             case 1:
                 ContentValues value = topRatedValues.get(0);
                 int movieId = Integer.parseInt(value
-                                .get(MovieContract.TopRatedEntry.COLUMN_MOVIE_ID)
-                                .toString());
+                        .get(MovieContract.TopRatedEntry.COLUMN_MOVIE_ID)
+                        .toString());
                 final Uri uri = ContentUris.withAppendedId(MovieContract.TopRatedEntry.CONTENT_URI,
                         movieId);
                 resolver.insert(uri, value);
@@ -149,19 +144,20 @@ public class DbUtils {
 
     @Nullable
     public static List<Movie> getTopRatedMovies(Integer start, Integer end, ContentResolver resolver) {
-        List<Movie> result = new LinkedList<>();
-        String selection = MovieContract.TopRatedEntry.COLUMN_POSITION + " > ? AND " +
-                MovieContract.TopRatedEntry.COLUMN_POSITION + " < ? ";
-        String[] selectionArgs = new String[]{start.toString(), end.toString()};
-        String sortOrder = MovieContract.TopRatedEntry.COLUMN_POSITION + " DESC LIMIT 20";
+        List<Movie> result = new ArrayList<>();
+        String sortOrder = MovieContract.TopRatedEntry.COLUMN_RATING + " DESC LIMIT " + (end - start)
+                + " OFFSET " + start;
         Cursor cursor = resolver.query(MovieContract.TopRatedEntry.CONTENT_URI,
                 null,
-                selection,
-                selectionArgs,
+                null,
+                null,
                 sortOrder);
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                result.add(createMovieFromCursor(cursor));
+                int movieId = cursor.getInt(0);
+                Movie movie = getMovie(movieId, resolver);
+                if (movie != null)
+                    result.add(movie);
             } while (cursor.moveToNext());
             cursor.close();
         }
@@ -169,10 +165,10 @@ public class DbUtils {
     }
 
     public static void addUpcomingMovies(List<Movie> movies, final ContentResolver resolver) {
-        List<ContentValues> upcomingValues = new LinkedList<>();
+        List<ContentValues> upcomingValues = new ArrayList<>();
 
         for (Movie movie : movies) {
-            if (getUpcomingMovie(movie.getId(), resolver) != null) {
+            if (getUpcomingMovie(movie.getId(), resolver) == null) {
                 DbUtils.addMovieIfNotExist(movie.getId(), resolver);
 
                 ContentValues value = new ContentValues();
@@ -184,7 +180,7 @@ public class DbUtils {
 
         int valuesNumber = upcomingValues.size();
 
-        switch (valuesNumber){
+        switch (valuesNumber) {
             case 0:
                 break;
             case 1:
@@ -204,7 +200,7 @@ public class DbUtils {
 
     @Nullable
     public static List<Movie> getUpcomingMovies(Integer start, Integer end, ContentResolver resolver) {
-        List<Movie> result = new LinkedList<>();
+        List<Movie> result = new ArrayList<>();
         String sortOrder = MovieContract.UpcomingEntry.COLUMN_RELEASE_DATE + " DESC ";
         Cursor cursor = resolver.query(MovieContract.UpcomingEntry.CONTENT_URI,
                 null,
@@ -213,7 +209,10 @@ public class DbUtils {
                 sortOrder);
         if (cursor != null && cursor.move(start)) {
             do {
-                result.add(createMovieFromCursor(cursor));
+                int movieId = cursor.getInt(0);
+                Movie movie = getMovie(movieId, resolver);
+                if (movie != null)
+                    result.add(movie);
             } while (cursor.moveToNext() && cursor.getPosition() < end);
             cursor.close();
         }

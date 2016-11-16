@@ -167,7 +167,7 @@ public class MovieContract {
         public static final String TABLE_NAME = "top_rated";
 
         public static final String COLUMN_MOVIE_ID = "movie_id";
-        public static final String COLUMN_POSITION = "position";
+        public static final String COLUMN_RATING = "rating";
     }
 
     public static final class UpcomingEntry implements BaseColumns{
