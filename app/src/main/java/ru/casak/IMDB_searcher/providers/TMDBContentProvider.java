@@ -128,7 +128,7 @@ public class TMDBContentProvider extends ContentProvider {
                         sortOrder);
             case TOP_RATED_ENTRY:
                 selection = MovieContract.TopRatedEntry.TABLE_NAME + "." +
-                        MovieContract.TopRatedEntry._ID + " = ?";
+                        MovieContract.TopRatedEntry.COLUMN_MOVIE_ID + " = ?";
                 selectionArgs = new String[]{uri.getLastPathSegment()};
                 return sTopRatedQueryBuilder.query(db,
                         projection,
@@ -147,7 +147,7 @@ public class TMDBContentProvider extends ContentProvider {
                         sortOrder);
             case UPCOMING_ENTRY:
                 selection = MovieContract.UpcomingEntry.TABLE_NAME + "." +
-                        MovieContract.UpcomingEntry._ID + " = ?";
+                        MovieContract.UpcomingEntry.COLUMN_MOVIE_ID + " = ?";
                 selectionArgs = new String[]{uri.getLastPathSegment()};
                 return sUpcomingQueryBuilder.query(db,
                         projection,
@@ -238,63 +238,64 @@ public class TMDBContentProvider extends ContentProvider {
             case MOVIE:
                 _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, contentValues);
                 if (_id > 0)
-                    result = ContentUris.withAppendedId(uri, _id);
+                    result = uri;
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             case TOP_RATED_ENTRY:
                 _id = db.insert(MovieContract.TopRatedEntry.TABLE_NAME, null, contentValues);
                 if (_id > 0)
-                    result = ContentUris.withAppendedId(uri, _id);
+                    result = uri;
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             case UPCOMING_ENTRY:
                 _id = db.insert(MovieContract.UpcomingEntry.TABLE_NAME, null, contentValues);
                 if (_id > 0)
-                    result = ContentUris.withAppendedId(uri, _id);
+                    result = uri;
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             case FAVORITE:
                 _id = db.insert(MovieContract.FavoritesEntry.TABLE_NAME, null, contentValues);
                 if (_id > 0)
-                    result = ContentUris.withAppendedId(uri, _id);
+                    result = uri;
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             case GENRE:
                 _id = db.insert(MovieContract.GengeEntry.TABLE_NAME, null, contentValues);
                 if (_id > 0)
-                    result = ContentUris.withAppendedId(uri, _id);
+                    result = uri;
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             case COMPANY:
                 _id = db.insert(MovieContract.CompanyEntry.TABLE_NAME, null, contentValues);
                 if (_id > 0)
-                    result = ContentUris.withAppendedId(uri, _id);
+                    result = uri;
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             case COUNTRY:
                 _id = db.insert(MovieContract.CountryEntry.TABLE_NAME, null, contentValues);
                 if (_id > 0)
-                    result = ContentUris.withAppendedId(uri, _id);
+                    result = uri;
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             case LANGUAGE:
                 _id = db.insert(MovieContract.SpokenLanguagesEntry.TABLE_NAME, null, contentValues);
                 if (_id > 0)
-                    result = ContentUris.withAppendedId(uri, _id);
+                    result = uri;
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+        if(result != null)
+            getContext().getContentResolver().notifyChange(result, null);
 
         return result;
     }
