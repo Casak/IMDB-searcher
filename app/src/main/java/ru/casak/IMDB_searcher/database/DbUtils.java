@@ -8,7 +8,10 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -138,7 +141,7 @@ public class DbUtils {
                 break;
             default:
                 resolver.bulkInsert(MovieContract.TopRatedEntry.CONTENT_URI,
-                        topRatedValues.toArray(new ContentValues[movies.size()]));
+                        topRatedValues.toArray(new ContentValues[topRatedValues.size()]));
         }
     }
 
@@ -194,26 +197,32 @@ public class DbUtils {
                 break;
             default:
                 resolver.bulkInsert(MovieContract.UpcomingEntry.CONTENT_URI,
-                        upcomingValues.toArray(new ContentValues[movies.size()]));
+                        upcomingValues.toArray(new ContentValues[upcomingValues.size()]));
         }
     }
 
     @Nullable
     public static List<Movie> getUpcomingMovies(Integer start, Integer end, ContentResolver resolver) {
         List<Movie> result = new ArrayList<>();
-        String sortOrder = MovieContract.UpcomingEntry.COLUMN_RELEASE_DATE + " DESC ";
+        String dateToday = new SimpleDateFormat("yyyy-MM-dd")
+                .format(Calendar.getInstance().getTime());
+
+        String selection = MovieContract.UpcomingEntry.COLUMN_RELEASE_DATE + " >= ?" ;
+        String[] selectionArgs = new String[]{dateToday};
+        String sortOrder = MovieContract.UpcomingEntry.COLUMN_RELEASE_DATE + " ASC LIMIT "
+                + (end - start) + " OFFSET " + start;
         Cursor cursor = resolver.query(MovieContract.UpcomingEntry.CONTENT_URI,
                 null,
-                null,
-                null,
+                selection,
+                selectionArgs,
                 sortOrder);
-        if (cursor != null && cursor.move(start)) {
+        if (cursor != null && cursor.moveToFirst()) {
             do {
-                int movieId = cursor.getInt(0);
+                int movieId = cursor.getInt(1);
                 Movie movie = getMovie(movieId, resolver);
                 if (movie != null)
                     result.add(movie);
-            } while (cursor.moveToNext() && cursor.getPosition() < end);
+            } while (cursor.moveToNext());
             cursor.close();
         }
         return result.size() == 0 ? null : result;

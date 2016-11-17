@@ -81,6 +81,7 @@ public class Top250Fragment extends Fragment {
             for (Movie movie : movies) {
                 cardsAdapter.addMovie(movie);
                 cardsAdapter.notifyItemRangeInserted(cardsAdapter.getMovieList().size() - 1, 1);
+                loading = true;
             }
         } else {
             TMDBRetrofit
